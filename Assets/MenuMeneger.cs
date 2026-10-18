@@ -2,10 +2,10 @@ using System.Diagnostics;
 using System.Security.Permissions;
 using UnityEngine;
 
-public class MenuMenager : MonoBehaviour
+public class MenuMeneger : MonoBehaviour
 {
-    [SerializeField] private GameObjetc painelMenuPrincipal;
-    [SerializeField] private GameObjetc painelOpcoes;
+    public GameObject painelMenuPrincipal;
+    public GameObject painelOpcoes;
 
     public void jogar()
     {
@@ -25,9 +25,9 @@ public class MenuMenager : MonoBehaviour
         
     }
 
-    public void Sair()
+     public void Sair()
     {
-        Debug.Log("Sair do jogo");
+        
         Application.Quit();
         
     }
