@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 38fa170997f434c4b871e49e104c2714, type: 3}
+  m_Name: Paladin
+  m_EditorClassIdentifier: Assembly-CSharp::ClassData
+  playerClass: 1
+  displayName: Paladino
+  suit: 1
+  effect: 0
+  maxHealth: 20
+  portrait: {fileID: -8594515011827703002, guid: a4a7b687f93c433459d6479a3e2cbae7, type: 3}
