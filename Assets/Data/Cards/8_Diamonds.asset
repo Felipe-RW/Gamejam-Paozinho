@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CardData
   suit: 3
   value: 8
-  sprite: {fileID: 5318155681387047216, guid: 397c808cf08d67544b2ff52e73922d23, type: 3}
+  sprite: {fileID: -4419193845909244122, guid: 4198a8d46e4dfb04b946b23552b9d8c6, type: 3}

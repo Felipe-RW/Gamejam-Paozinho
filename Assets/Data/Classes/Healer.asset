@@ -16,5 +16,5 @@ MonoBehaviour:
   displayName: Curandeiro
   suit: 2
   maxHealth: 20
-  portrait: {fileID: -3152180383845805149, guid: 316c2297da69d6848bedb69817d01931, type: 3}
-  suitSprite: {fileID: 6907417611574773779, guid: 6bbaabd136d69334899614c885bf8327, type: 3}
+  portrait: {fileID: 4363466762096504838, guid: 87c60e09362cdf74d8d3e6e496992fde, type: 3}
+  suitSprite: {fileID: 3435528371625913387, guid: 06b5d7c29ed9a8447aab9a311a6a4542, type: 3}

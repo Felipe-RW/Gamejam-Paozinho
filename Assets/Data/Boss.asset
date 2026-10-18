@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Boss
   m_EditorClassIdentifier: Assembly-CSharp::BossData
   displayName: Valete de Paus
-  sprite: {fileID: 5214463068896568337, guid: 0dc6f3124687c5147b4f4ce6364f3461, type: 3}
+  sprite: {fileID: -8209682524755876957, guid: 4d954b6f5b94eda41ba5a4cbf0fdb671, type: 3}
   healthByDifficulty: 5000000078000000a0000000i
   startingArmor: 0
   attacks:
