@@ -41,9 +41,9 @@ public class GameManager : MonoBehaviour
 
     public void StartGame(List<ClassData> chosenClasses)
     {
-        if (chosenClasses.Count < 2 || chosenClasses.Count > 4)
+        if (chosenClasses.Count < 1 || chosenClasses.Count > 4)
         {
-            Debug.LogError("O jogo precisa de 2 a 4 jogadores.");
+            Debug.LogError("O jogo precisa de 1 a 4 jogadores.");
             return;
         }
 

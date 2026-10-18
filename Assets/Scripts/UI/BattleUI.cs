@@ -7,6 +7,7 @@ public class BattleUI : MonoBehaviour
 {
     [Header("Jogo")]
     public GameManager gameManager;
+    public LayoutPresets layoutPresets;
 
     [Header("Jogadores (na ordem P0..P3)")]
     public PlayerPanelView[] panels;
@@ -22,7 +23,7 @@ public class BattleUI : MonoBehaviour
     [Header("HUD")]
     public Button endTurnButton;
 
-    [Header("Teste: classe de cada posicao (vazio = sem jogador)")]
+    [Header("Teste: classes dos jogadores (vazio = ignorado)")]
     public bool startOnPlay = true;
     public ClassData[] seatClasses = new ClassData[4];
 
@@ -56,14 +57,18 @@ public class BattleUI : MonoBehaviour
 
         if (!startOnPlay) return;
 
+        var source = GameSession.HasSelection ? GameSession.SeatClasses : seatClasses;
+        GameSession.HasSelection = false;
+
         var chosen = new List<ClassData>();
         seatOfPlayer.Clear();
-        for (int seat = 0; seat < seatClasses.Length && seat < panels.Length; seat++)
+        for (int seat = 0; seat < source.Length && seat < panels.Length; seat++)
         {
-            if (seatClasses[seat] == null) continue;
-            chosen.Add(seatClasses[seat]);
-            seatOfPlayer.Add(seat);
+            if (source[seat] == null) continue;
+            chosen.Add(source[seat]);
+            seatOfPlayer.Add(chosen.Count - 1);
         }
+        if (layoutPresets != null) layoutPresets.Apply(chosen.Count);
         gameManager.StartGame(chosen);
     }
 
