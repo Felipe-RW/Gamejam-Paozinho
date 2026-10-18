@@ -15,6 +15,6 @@ MonoBehaviour:
   playerClass: 2
   displayName: Curandeiro
   suit: 2
-  effect: 1
   maxHealth: 20
   portrait: {fileID: -3152180383845805149, guid: 316c2297da69d6848bedb69817d01931, type: 3}
+  suitSprite: {fileID: 6907417611574773779, guid: 6bbaabd136d69334899614c885bf8327, type: 3}

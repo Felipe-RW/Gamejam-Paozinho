@@ -3,7 +3,6 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-// Prefab de uma carta na mao. Mostra a frente (sprite da carta) ou o verso.
 [RequireComponent(typeof(Image))]
 public class CardView : MonoBehaviour, IPointerClickHandler
 {

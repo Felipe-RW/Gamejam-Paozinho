@@ -1,0 +1,38 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dd7cd583a665af549a0e43c870432908, type: 3}
+  m_Name: Boss
+  m_EditorClassIdentifier: Assembly-CSharp::BossData
+  displayName: Valete de Paus
+  sprite: {fileID: 5214463068896568337, guid: 0dc6f3124687c5147b4f4ce6364f3461, type: 3}
+  healthByDifficulty: 5000000078000000a0000000i
+  startingArmor: 0
+  attacks:
+  - attackName: Ataque Forte
+    damage: 14
+    hits: 1
+    gainBlock: 0
+    gainThorns: 0
+    gainArmor: 0
+  - attackName: Golpe de Escudo
+    damage: 8
+    hits: 1
+    gainBlock: 10
+    gainThorns: 0
+    gainArmor: 0
+  - attackName: Levantar Escudo
+    damage: 1
+    hits: 1
+    gainBlock: 0
+    gainThorns: 2
+    gainArmor: 0
+  fixedOrder: 0

@@ -1,19 +1,24 @@
 public class PlayerState
 {
     public readonly ClassData classData;
-    public readonly Hand hand = new();
+    public readonly Hand hand;
+    public readonly Deck deck;
     public readonly CardData[] slots;
+    public readonly int[] slotPlayedBy;
 
     public int health;
-    public int shield;
+    public int block;
 
     public bool IsAlive => health > 0;
 
-    public PlayerState(ClassData classData, int slotCount)
+    public PlayerState(ClassData classData, int slotCount, int handLimit, Deck deck)
     {
         this.classData = classData;
+        this.deck = deck;
+        hand = new Hand(handLimit);
         health = classData.maxHealth;
         slots = new CardData[slotCount];
+        slotPlayedBy = new int[slotCount];
     }
 
     public int FreeSlotIndex()
@@ -29,11 +34,10 @@ public class PlayerState
         health = System.Math.Min(classData.maxHealth, health + amount);
     }
 
-    // O escudo absorve o dano primeiro.
     public void TakeDamage(int amount)
     {
-        int absorbed = System.Math.Min(shield, amount);
-        shield -= absorbed;
+        int absorbed = System.Math.Min(block, amount);
+        block -= absorbed;
         health = System.Math.Max(0, health - (amount - absorbed));
     }
 }

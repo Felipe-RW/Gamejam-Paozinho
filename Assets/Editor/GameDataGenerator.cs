@@ -43,15 +43,42 @@ public static class GameDataGenerator
     public static void GenerateClasses()
     {
         Directory.CreateDirectory(ClassesPath);
-        Make(PlayerClass.Barbarian, "Bárbaro",    Suit.Clubs,    EffectType.Attack);
-        Make(PlayerClass.Paladin,   "Paladino",   Suit.Spades,   EffectType.Attack);
-        Make(PlayerClass.Healer,    "Curandeiro", Suit.Hearts,   EffectType.Heal);
-        Make(PlayerClass.Sorcerer,  "Feiticeiro", Suit.Diamonds, EffectType.Shield);
+        Make(PlayerClass.Barbarian, "Bárbaro",    Suit.Clubs);
+        Make(PlayerClass.Paladin,   "Paladino",   Suit.Spades);
+        Make(PlayerClass.Healer,    "Curandeiro", Suit.Hearts);
+        Make(PlayerClass.Sorcerer,  "Feiticeiro", Suit.Diamonds);
         AssetDatabase.SaveAssets();
         Debug.Log("ClassData gerados em " + ClassesPath);
     }
 
-    static void Make(PlayerClass pc, string name, Suit suit, EffectType effect)
+    [MenuItem("Game/Generate Valete de Paus")]
+    public static void GenerateValeteDePaus()
+    {
+        Directory.CreateDirectory("Assets/Data/Bosses");
+        const string path = "Assets/Data/Bosses/ValeteDePaus.asset";
+        var boss = AssetDatabase.LoadAssetAtPath<BossData>(path);
+        if (boss == null)
+        {
+            boss = ScriptableObject.CreateInstance<BossData>();
+            AssetDatabase.CreateAsset(boss, path);
+        }
+        boss.displayName = "Valete de Paus";
+        boss.healthByDifficulty = new[] { 80, 120, 160 };
+        boss.startingArmor = 4;
+        boss.fixedOrder = false;
+        boss.attacks = new System.Collections.Generic.List<BossAttack>
+        {
+            new BossAttack { attackName = "Ataque Forte",    damage = 14 },
+            new BossAttack { attackName = "Golpe de Escudo", damage = 8, gainBlock = 10 },
+            new BossAttack { attackName = "Levantar Escudo", gainThorns = 2 },
+            new BossAttack { attackName = "Apunhalar",       damage = 7, hits = 2 },
+        };
+        EditorUtility.SetDirty(boss);
+        AssetDatabase.SaveAssets();
+        Debug.Log("Valete de Paus gerado em " + path + " (falta colocar o sprite)");
+    }
+
+    static void Make(PlayerClass pc, string name, Suit suit)
     {
         string assetPath = $"{ClassesPath}/{pc}.asset";
         var data = AssetDatabase.LoadAssetAtPath<ClassData>(assetPath);
@@ -63,7 +90,6 @@ public static class GameDataGenerator
         data.playerClass = pc;
         data.displayName = name;
         data.suit = suit;
-        data.effect = effect;
         EditorUtility.SetDirty(data);
     }
 }
