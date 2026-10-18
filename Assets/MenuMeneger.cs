@@ -5,13 +5,20 @@ using UnityEngine.SceneManagement;
 
 public class MenuMeneger : MonoBehaviour
 {
-    public string abrirplayers;
+    public GameObject popupplayers;
     public GameObject painelMenuPrincipal;
     public GameObject painelOpcoes;
 
     public void jogar()
     {
-        SceneManager.LoadScene(abrirplayers);
+        painelMenuPrincipal.SetActive(false);
+        popupplayers.SetActive(true);
+    }
+
+    public void FecharJogar()
+    {
+        popupplayers.SetActive(false);
+        painelMenuPrincipal.SetActive(true);    
     }
     
     public void AbrirOpcoes()
