@@ -14,7 +14,6 @@ public class GameManager : MonoBehaviour
     [Header("Regras")]
     public int suitBonus = 2;          // somado quando o naipe da carta combina com a classe do slot
     public int slotsPerPlayer = 3;
-    public int cardsPerTurn = 1;       // cartas que o jogador pode colocar na sua vez
 
     [Header("Cartas")]
     public List<CardData> allCards = new();   // as 40 cartas (A-10 x 4 naipes)
@@ -73,7 +72,7 @@ public class GameManager : MonoBehaviour
     // Coloca uma carta da mao do jogador atual no slot de qualquer jogador (inclusive o proprio).
     public bool PlayCard(CardData card, int targetPlayerIndex, int slotIndex = -1)
     {
-        if (Phase != GamePhase.PlayerTurn || CardsPlayedThisTurn >= cardsPerTurn) return false;
+        if (Phase != GamePhase.PlayerTurn) return false;
         if (targetPlayerIndex < 0 || targetPlayerIndex >= players.Count) return false;
         if (!CurrentPlayer.hand.Cards.Contains(card)) return false;
 
