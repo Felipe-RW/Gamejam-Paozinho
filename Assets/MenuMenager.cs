@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class MenuMenager : MonoBehaviour
 {
-    [SerializeField] private GameObjetc painelMenuPrincipal;
-    [SerializeField] private GameObjetc painelOpcoes;
+    [SerializeField] private GameObject painelMenuPrincipal;
+    [SerializeField] private GameObject painelOpcoes;
 
     public void jogar()
     {
@@ -27,7 +27,6 @@ public class MenuMenager : MonoBehaviour
 
     public void Sair()
     {
-        Debug.Log("Sair do jogo");
         Application.Quit();
         
     }
