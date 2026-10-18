@@ -1,15 +1,17 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public enum GamePhase { Setup, PlayerTurn, Resolving, BossTurn, Won, Lost }
+public enum GamePhase { Setup, BossRoll, PlayerTurn, Resolving, BossTurn, Won, Lost }
 
 public class GameManager : MonoBehaviour
 {
     [Header("Chefe")]
     public BossData boss;
+    public float bossRollSeconds = 2f;
     [Range(0, 2)] public int difficulty;
 
     [Header("Menu")]
@@ -30,6 +32,7 @@ public class GameManager : MonoBehaviour
     public int BossBlock { get; private set; }
     public int BossThorns { get; private set; }
     public int BossArmor { get; private set; }
+    public BossAttack CurrentBossAttack { get; private set; }
     public IReadOnlyList<PlayerState> Players => players;
     public PlayerState CurrentPlayer => players[currentIndex];
     public int CardsPlayedThisTurn { get; private set; }
@@ -37,6 +40,7 @@ public class GameManager : MonoBehaviour
     public event Action OnStateChanged;
     public event Action<PlayerState, CardData, int> OnCardPlaced;
     public event Action<PlayerState, Suit, int> OnEffectApplied;
+    public event Action<BossAttack> OnBossMoveChosen;
     public event Action<BossAttack> OnBossAttack;
     public event Action<GamePhase> OnPhaseChanged;
 
@@ -59,13 +63,14 @@ public class GameManager : MonoBehaviour
 
         BossHealth = BossMaxHealth;
         BossArmor = boss.startingArmor;
-        BossBlock = BossArmor;
+        BossBlock = 0;
         BossThorns = 0;
+        CurrentBossAttack = null;
         lastBossAttack = -1;
         foreach (var p in players) p.hand.FillFrom(p.deck);
 
-        currentIndex = 0;
-        BeginTurn();
+        StopAllCoroutines();
+        StartCoroutine(BeginRound());
     }
 
     public static int HandLimitFor(int playerCount) => 9 - playerCount;
@@ -90,6 +95,22 @@ public class GameManager : MonoBehaviour
         Phase = phase;
         OnPhaseChanged?.Invoke(phase);
         OnStateChanged?.Invoke();
+    }
+
+    IEnumerator BeginRound()
+    {
+        SetPhase(GamePhase.BossRoll);
+        yield return new WaitForSeconds(bossRollSeconds);
+
+        CurrentBossAttack = PickBossAttack();
+        var move = CurrentBossAttack;
+        if (move != null) BossArmor += move.gainArmor;
+        BossBlock = BossArmor + (move != null ? move.gainBlock : 0);
+        if (move != null) BossThorns += move.gainThorns;
+        OnBossMoveChosen?.Invoke(move);
+
+        currentIndex = NextAliveFromStart();
+        BeginTurn();
     }
 
     void BeginTurn()
@@ -219,18 +240,13 @@ public class GameManager : MonoBehaviour
     {
         SetPhase(GamePhase.BossTurn);
 
-        BossBlock = BossArmor;
-
-        var attack = PickBossAttack();
+        var attack = CurrentBossAttack;
         if (attack != null)
         {
             for (int h = 0; h < attack.hits && attack.damage > 0; h++)
                 foreach (var p in players)
                     if (p.IsAlive) p.TakeDamage(attack.damage);
 
-            BossBlock += attack.gainBlock;
-            BossThorns += attack.gainThorns;
-            BossArmor += attack.gainArmor;
             OnBossAttack?.Invoke(attack);
         }
 
@@ -238,8 +254,7 @@ public class GameManager : MonoBehaviour
 
         if (!players.Exists(p => p.IsAlive)) { SetPhase(GamePhase.Lost); return; }
 
-        currentIndex = NextAliveFromStart();
-        BeginTurn();
+        StartCoroutine(BeginRound());
     }
 
     BossAttack PickBossAttack()

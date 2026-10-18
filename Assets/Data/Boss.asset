@@ -18,18 +18,21 @@ MonoBehaviour:
   startingArmor: 0
   attacks:
   - attackName: Ataque Forte
+    icon: {fileID: 3463658362275521134, guid: 17c17f3346dc7444493962d769b176e0, type: 3}
     damage: 14
     hits: 1
     gainBlock: 0
     gainThorns: 0
     gainArmor: 0
   - attackName: Golpe de Escudo
+    icon: {fileID: 4951810628055396208, guid: 10eb6a4b0c1a37b4f8cb0a4cf14c486e, type: 3}
     damage: 8
     hits: 1
     gainBlock: 10
     gainThorns: 0
     gainArmor: 0
-  - attackName: Levantar Escudo
+  - attackName: Espinhos Espinhosos
+    icon: {fileID: 7941249075350040784, guid: 243f7c3c1295e074b8051027e155d371, type: 3}
     damage: 1
     hits: 1
     gainBlock: 0

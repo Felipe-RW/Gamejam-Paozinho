@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -16,6 +17,8 @@ public class BattleUI : MonoBehaviour
     public Slider bossHealthBar;
     public TMP_Text bossHealthText;
     public Image bossSprite;
+    public Image bossMoveImage;
+    public TMP_Text bossMoveText;
     public TMP_Text bossArmorText;
     public TMP_Text bossBlockText;
     public TMP_Text bossThornsText;
@@ -29,15 +32,21 @@ public class BattleUI : MonoBehaviour
 
     CardData selected;
     readonly List<int> seatOfPlayer = new();
+    Coroutine spinning;
 
     void OnEnable()
     {
         gameManager.OnStateChanged += Refresh;
+        gameManager.OnPhaseChanged += OnPhaseChanged;
+        gameManager.OnBossMoveChosen += ShowBossMove;
     }
 
     void OnDisable()
     {
         gameManager.OnStateChanged -= Refresh;
+        gameManager.OnPhaseChanged -= OnPhaseChanged;
+        gameManager.OnBossMoveChosen -= ShowBossMove;
+        spinning = null;
     }
 
     void Start()
@@ -70,6 +79,41 @@ public class BattleUI : MonoBehaviour
         }
         if (layoutPresets != null) layoutPresets.Apply(chosen.Count);
         gameManager.StartGame(chosen);
+    }
+
+    void OnPhaseChanged(GamePhase phase)
+    {
+        if (phase != GamePhase.BossRoll) return;
+        if (spinning != null) StopCoroutine(spinning);
+        spinning = StartCoroutine(SpinBossMove());
+    }
+
+    IEnumerator SpinBossMove()
+    {
+        var attacks = gameManager.Boss.attacks;
+        if (bossMoveText != null) bossMoveText.text = "...";
+        if (attacks.Count == 0) yield break;
+
+        float duration = Mathf.Max(0.01f, gameManager.bossRollSeconds);
+        float elapsed = 0f;
+        int i = 0;
+        while (true)
+        {
+            if (bossMoveImage != null) bossMoveImage.sprite = attacks[i++ % attacks.Count].icon;
+            float interval = Mathf.Lerp(0.06f, 0.25f, elapsed / duration);
+            elapsed += interval;
+            yield return new WaitForSeconds(interval);
+        }
+    }
+
+    void ShowBossMove(BossAttack move)
+    {
+        if (spinning != null) StopCoroutine(spinning);
+        spinning = null;
+        if (move == null) return;
+
+        if (bossMoveImage != null) bossMoveImage.sprite = move.icon;
+        if (bossMoveText != null) bossMoveText.text = move.Describe();
     }
 
     void OnHandCardClicked(CardView view)
