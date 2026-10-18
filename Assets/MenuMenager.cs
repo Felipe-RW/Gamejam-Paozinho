@@ -31,4 +31,5 @@ public class MenuMenager : MonoBehaviour
         Application.Quit();
         
     }
+
 }
