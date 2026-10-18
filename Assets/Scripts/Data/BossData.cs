@@ -34,7 +34,7 @@ public class BossData : ScriptableObject
     public string displayName;
     public Sprite sprite;
 
-    public int[] healthByDifficulty = { 80, 120, 160 };
+    public int[] healthByPlayerCount = { 60, 80, 120, 160 };
 
     public int startingArmor;
 

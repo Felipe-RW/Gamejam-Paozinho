@@ -63,7 +63,7 @@ public static class GameDataGenerator
             AssetDatabase.CreateAsset(boss, path);
         }
         boss.displayName = "Valete de Paus";
-        boss.healthByDifficulty = new[] { 80, 120, 160 };
+        boss.healthByPlayerCount = new[] { 60, 80, 120, 160 };
         boss.startingArmor = 4;
         boss.fixedOrder = false;
         boss.attacks = new System.Collections.Generic.List<BossAttack>
