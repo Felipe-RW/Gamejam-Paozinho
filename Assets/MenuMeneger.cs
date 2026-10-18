@@ -1,5 +1,4 @@
-using System.Diagnostics;
-using System.Security.Permissions;
+using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -29,7 +28,7 @@ public class MenuMeneger : MonoBehaviour
 
      public void Sair()
     {
-        
+        Debug.Log("Saiu do Jogo");
         Application.Quit();
         
     }
