@@ -3,9 +3,9 @@ using UnityEngine.UI;
 
 public class TelaSelecao : MonoBehaviour
 {
-    [SerializeField] private Slot[] slots;
-    [SerializeField] private Button botaoJogar;
-    [SerializeField] private int minimoJogadores = 2;
+    public Slot[] slots;
+    public Button botaoJogar;
+    public int minimoJogadores = 2;
 
     private void Update()
     {

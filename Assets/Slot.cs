@@ -5,14 +5,14 @@ using TMPro;
 public class Slot : MonoBehaviour
 {
     [Header("Objetos")]
-    [SerializeField] private GameObject botaoStart;
-    [SerializeField] private GameObject areaPersonagem;
-    [SerializeField] private Image imagemPersonagem;
-    [SerializeField] private TextMeshProUGUI textoNome;
+     public GameObject botaoStart;
+     public GameObject areaPersonagem;
+     public Image imagemPersonagem;
+     public TextMeshProUGUI textoNome;
 
     [Header("Personagens")]
-    [SerializeField] private Sprite[] sprites;
-    [SerializeField] private string[] nomes;
+     public Sprite[] sprites;
+     public string[] nomes;
 
     private int indice;
 
