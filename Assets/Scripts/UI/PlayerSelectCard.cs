@@ -19,6 +19,8 @@ public class PlayerSelectCard : MonoBehaviour
     public event Action Changed;
 
     ClassData[] classes;
+    TMP_Text confirmLabel;
+    string confirmText;
     int index;
 
     public void Setup(ClassData[] available)
@@ -27,13 +29,16 @@ public class PlayerSelectCard : MonoBehaviour
         selectButton.onClick.AddListener(Open);
         arrowLeft.onClick.AddListener(() => Move(-1));
         arrowRight.onClick.AddListener(() => Move(1));
-        confirmButton.onClick.AddListener(Confirm);
+        confirmLabel = confirmButton.GetComponentInChildren<TMP_Text>(true);
+        confirmText = confirmLabel != null ? confirmLabel.text : "Confirmar";
+        confirmButton.onClick.AddListener(OnConfirmClicked);
         ShowEmpty();
     }
 
     void ShowEmpty()
     {
         Confirmed = null;
+        SetConfirmLabel(confirmText);
         selectButton.gameObject.SetActive(true);
         emptyText.gameObject.SetActive(true);
         pickerRoot.SetActive(false);
@@ -65,12 +70,23 @@ public class PlayerSelectCard : MonoBehaviour
         nameText.text = classes[index].displayName;
     }
 
+    void OnConfirmClicked()
+    {
+        if (Confirmed != null) ShowEmpty();
+        else Confirm();
+    }
+
+    void SetConfirmLabel(string text)
+    {
+        if (confirmLabel != null) confirmLabel.text = text;
+    }
+
     void Confirm()
     {
         Confirmed = classes[index];
         arrowLeft.gameObject.SetActive(false);
         arrowRight.gameObject.SetActive(false);
-        confirmButton.gameObject.SetActive(false);
+        SetConfirmLabel("Cancelar");
         Changed?.Invoke();
     }
 }

@@ -41,6 +41,7 @@ public class BattleEffects : MonoBehaviour
     void OnEnable()
     {
         gm = battleUI.gameManager;
+        gm.OnCardDealStart += OnCardDealStart;
         gm.OnBossAttackStart += OnBossAttackStart;
         gm.OnBossAttackEnd += OnBossAttackEnd;
         gm.OnBossDefense += OnBossDefense;
@@ -53,12 +54,42 @@ public class BattleEffects : MonoBehaviour
     void OnDisable()
     {
         if (gm == null) return;
+        gm.OnCardDealStart -= OnCardDealStart;
         gm.OnBossAttackStart -= OnBossAttackStart;
         gm.OnBossAttackEnd -= OnBossAttackEnd;
         gm.OnBossDefense -= OnBossDefense;
         gm.OnBossHit -= OnBossHit;
         gm.OnPlayerDamaged -= OnPlayerDamaged;
         gm.OnEffectApplied -= OnEffectApplied;
+    }
+
+    void OnCardDealStart(PlayerState player, CardData card)
+    {
+        var panel = battleUI.GetPanel(player);
+        if (panel == null || panel.cardPrefab == null || panel.handRoot == null) return;
+        StartCoroutine(FlyDealtCard(panel, panel.handRoot as RectTransform));
+    }
+
+    IEnumerator FlyDealtCard(PlayerPanelView panel, RectTransform target)
+    {
+        var canvasRect = (RectTransform)target.GetComponentInParent<Canvas>().rootCanvas.transform;
+        var view = Instantiate(panel.cardPrefab, canvasRect);
+        view.ShowBack(panel.cardBack);
+        PutOnTop(view.gameObject);
+
+        Vector3 a = canvasRect.TransformPoint(canvasRect.rect.center);
+        Vector3 b = target.TransformPoint(target.rect.center);
+        view.transform.position = a;
+
+        float duration = Mathf.Max(0.01f, gm.dealSeconds);
+        float t = 0f;
+        while (t < duration)
+        {
+            t += Time.deltaTime;
+            view.transform.position = Vector3.Lerp(a, b, t / duration);
+            yield return null;
+        }
+        Destroy(view.gameObject);
     }
 
     void OnBossAttackStart(BossAttack move)

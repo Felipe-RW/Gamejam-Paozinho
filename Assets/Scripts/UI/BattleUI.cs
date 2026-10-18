@@ -81,6 +81,17 @@ public class BattleUI : MonoBehaviour
         gameManager.StartGame(chosen);
     }
 
+    public PlayerPanelView GetPanel(PlayerState player)
+    {
+        for (int i = 0; i < gameManager.Players.Count; i++)
+        {
+            if (gameManager.Players[i] != player) continue;
+            if (i >= seatOfPlayer.Count || seatOfPlayer[i] >= panels.Length) return null;
+            return panels[seatOfPlayer[i]];
+        }
+        return null;
+    }
+
     public RectTransform BossAnchor => bossSprite != null ? bossSprite.rectTransform : null;
 
     public RectTransform GetPlayerAnchor(PlayerState player)
@@ -137,9 +148,16 @@ public class BattleUI : MonoBehaviour
 
     void OnSlotClicked(int seat, int slotIndex)
     {
-        if (selected == null) return;
         int playerIndex = seatOfPlayer.IndexOf(seat);
         if (playerIndex < 0) return;
+
+        if (gameManager.Players[playerIndex].slots[slotIndex] != null)
+        {
+            if (gameManager.ReturnCard(playerIndex, slotIndex)) selected = null;
+            return;
+        }
+
+        if (selected == null) return;
         if (gameManager.PlayCard(selected, playerIndex, slotIndex)) selected = null;
     }
 
