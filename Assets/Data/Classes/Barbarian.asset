@@ -15,6 +15,6 @@ MonoBehaviour:
   playerClass: 0
   displayName: "B\xE1rbaro"
   suit: 0
-  effect: 0
   maxHealth: 20
   portrait: {fileID: 4673128588958589295, guid: 6fbc8a4ec52860647b27754caeb594a5, type: 3}
+  suitSprite: {fileID: -6639002432183297823, guid: 6bbaabd136d69334899614c885bf8327, type: 3}

@@ -23,7 +23,6 @@ public class Deck
         }
     }
 
-    // Quando o baralho acaba, o descarte volta embaralhado.
     public CardData Draw()
     {
         if (drawPile.Count == 0)

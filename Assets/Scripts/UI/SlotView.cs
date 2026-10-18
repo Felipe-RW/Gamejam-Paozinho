@@ -3,7 +3,6 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-// Um slot de carta na coluna do meio. Adicionado automaticamente pelo PlayerPanelView.
 [RequireComponent(typeof(Image))]
 public class SlotView : MonoBehaviour, IPointerClickHandler
 {

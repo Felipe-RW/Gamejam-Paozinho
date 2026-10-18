@@ -8,34 +8,37 @@ public enum GamePhase { Setup, PlayerTurn, Resolving, BossTurn, Won, Lost }
 public class GameManager : MonoBehaviour
 {
     [Header("Chefe")]
-    public int bossMaxHealth = 24;
-    public int bossAttack = 16;
+    public BossData boss;
+    [Range(0, 2)] public int difficulty;
 
     [Header("Regras")]
-    public int suitBonus = 2;          // somado quando o naipe da carta combina com a classe do slot
+    public int suitBonus = 2;
     public int slotsPerPlayer = 3;
 
     [Header("Cartas")]
-    public List<CardData> allCards = new();   // as 40 cartas (A-10 x 4 naipes)
+    public List<CardData> allCards = new();
 
     public GamePhase Phase { get; private set; } = GamePhase.Setup;
     public int BossHealth { get; private set; }
+    public BossData Boss => boss;
+    public int BossMaxHealth => boss.healthByDifficulty[Mathf.Clamp(difficulty, 0, boss.healthByDifficulty.Length - 1)];
+    public int BossBlock { get; private set; }
+    public int BossThorns { get; private set; }
+    public int BossArmor { get; private set; }
     public IReadOnlyList<PlayerState> Players => players;
     public PlayerState CurrentPlayer => players[currentIndex];
     public int CardsPlayedThisTurn { get; private set; }
 
-    // Ganchos para a UI.
     public event Action OnStateChanged;
-    public event Action<PlayerState, CardData, int> OnCardPlaced;   // dono do slot, carta, indice do slot
-    public event Action<PlayerState, EffectType, int> OnEffectApplied;
-    public event Action<int> OnBossAttack;
+    public event Action<PlayerState, CardData, int> OnCardPlaced;
+    public event Action<PlayerState, Suit, int> OnEffectApplied;
+    public event Action<BossAttack> OnBossAttack;
     public event Action<GamePhase> OnPhaseChanged;
 
     readonly List<PlayerState> players = new();
-    Deck deck;
     int currentIndex;
+    int lastBossAttack;
 
-    // Chamado pelo menu depois que cada jogador escolheu a classe (2 a 4).
     public void StartGame(List<ClassData> chosenClasses)
     {
         if (chosenClasses.Count < 2 || chosenClasses.Count > 4)
@@ -45,15 +48,22 @@ public class GameManager : MonoBehaviour
         }
 
         players.Clear();
-        foreach (var c in chosenClasses) players.Add(new PlayerState(c, slotsPerPlayer));
+        int handLimit = HandLimitFor(chosenClasses.Count);
+        foreach (var c in chosenClasses)
+            players.Add(new PlayerState(c, slotsPerPlayer, handLimit, new Deck(allCards)));
 
-        BossHealth = bossMaxHealth;
-        deck = new Deck(allCards);
-        foreach (var p in players) p.hand.FillFrom(deck);
+        BossHealth = BossMaxHealth;
+        BossArmor = boss.startingArmor;
+        BossBlock = BossArmor;
+        BossThorns = 0;
+        lastBossAttack = -1;
+        foreach (var p in players) p.hand.FillFrom(p.deck);
 
         currentIndex = 0;
         BeginTurn();
     }
+
+    public static int HandLimitFor(int playerCount) => 9 - playerCount;
 
     void SetPhase(GamePhase phase)
     {
@@ -65,11 +75,10 @@ public class GameManager : MonoBehaviour
     void BeginTurn()
     {
         CardsPlayedThisTurn = 0;
-        CurrentPlayer.hand.FillFrom(deck);
+        CurrentPlayer.hand.FillFrom(CurrentPlayer.deck);
         SetPhase(GamePhase.PlayerTurn);
     }
 
-    // Coloca uma carta da mao do jogador atual no slot de qualquer jogador (inclusive o proprio).
     public bool PlayCard(CardData card, int targetPlayerIndex, int slotIndex = -1)
     {
         if (Phase != GamePhase.PlayerTurn) return false;
@@ -84,6 +93,7 @@ public class GameManager : MonoBehaviour
 
         CurrentPlayer.hand.Remove(card);
         target.slots[slotIndex] = card;
+        target.slotPlayedBy[slotIndex] = currentIndex;
         CardsPlayedThisTurn++;
 
         OnCardPlaced?.Invoke(target, card, slotIndex);
@@ -91,7 +101,6 @@ public class GameManager : MonoBehaviour
         return true;
     }
 
-    // Termina a vez do jogador atual. Depois do ultimo jogador, resolve a rodada.
     public void EndTurn()
     {
         if (Phase != GamePhase.PlayerTurn) return;
@@ -112,23 +121,26 @@ public class GameManager : MonoBehaviour
     {
         for (int i = from + 1; i < players.Count; i++)
             if (players[i].IsAlive) return i;
-        return -1; // sem proximo: fim da rodada
+        return -1;
     }
 
     void ResolveRound()
     {
         SetPhase(GamePhase.Resolving);
 
-        foreach (var owner in players)
+        for (int o = 0; o < players.Count; o++)
         {
+            var owner = players[o];
             for (int i = 0; i < owner.slots.Length; i++)
             {
                 var card = owner.slots[i];
                 if (card == null) continue;
 
-                int amount = card.value + (card.suit == owner.classData.suit ? suitBonus : 0);
-                ApplyEffect(owner, amount);
-                deck.Discard(card);
+                var player = players[owner.slotPlayedBy[i]];
+                int amount = card.value + (card.suit == player.classData.suit ? suitBonus : 0);
+                ApplySuitEffect(o, owner.slotPlayedBy[i], card.suit, amount);
+
+                player.deck.Discard(card);
                 owner.slots[i] = null;
             }
         }
@@ -137,42 +149,96 @@ public class GameManager : MonoBehaviour
         BossAttackPhase();
     }
 
-    // Ataque: tira vida do chefe. Cura e escudo: aplicados em todos os jogadores vivos.
-    void ApplyEffect(PlayerState owner, int amount)
+    void ApplySuitEffect(int ownerIndex, int playedBy, Suit suit, int amount)
     {
-        switch (owner.classData.effect)
+        var owner = players[ownerIndex];
+        switch (suit)
         {
-            case EffectType.Attack:
-                BossHealth = Mathf.Max(0, BossHealth - amount);
+            case Suit.Clubs:
+                owner.block += amount;
                 break;
-            case EffectType.Heal:
-                foreach (var p in players) p.Heal(amount);
+            case Suit.Spades:
+                DamageBoss(amount, playedBy);
                 break;
-            case EffectType.Shield:
-                foreach (var p in players) if (p.IsAlive) p.shield += amount;
+            case Suit.Hearts:
+                owner.Heal(amount);
+                break;
+            case Suit.Diamonds:
+                DrawClockwise(ownerIndex, amount);
                 break;
         }
-        OnEffectApplied?.Invoke(owner, owner.classData.effect, amount);
+        OnEffectApplied?.Invoke(owner, suit, amount);
+    }
+
+    void DamageBoss(int amount, int attackerIndex)
+    {
+        int absorbed = Mathf.Min(BossBlock, amount);
+        BossBlock -= absorbed;
+        BossHealth = Mathf.Max(0, BossHealth - (amount - absorbed));
+
+        if (BossThorns > 0) players[attackerIndex].TakeDamage(BossThorns);
+    }
+
+    void DrawClockwise(int startIndex, int count)
+    {
+        while (count > 0)
+        {
+            bool drewAny = false;
+            for (int k = 0; k < players.Count && count > 0; k++)
+            {
+                var p = players[(startIndex + k) % players.Count];
+                if (!p.IsAlive || !p.hand.DrawOne(p.deck)) continue;
+                count--;
+                drewAny = true;
+            }
+            if (!drewAny) return;
+        }
     }
 
     void BossAttackPhase()
     {
         SetPhase(GamePhase.BossTurn);
 
-        foreach (var p in players)
-        {
-            if (!p.IsAlive) continue;
-            p.TakeDamage(bossAttack);
-        }
-        OnBossAttack?.Invoke(bossAttack);
+        BossBlock = BossArmor;
 
-        // Escudo dura so uma rodada.
-        foreach (var p in players) p.shield = 0;
+        var attack = PickBossAttack();
+        if (attack != null)
+        {
+            for (int h = 0; h < attack.hits && attack.damage > 0; h++)
+                foreach (var p in players)
+                    if (p.IsAlive) p.TakeDamage(attack.damage);
+
+            BossBlock += attack.gainBlock;
+            BossThorns += attack.gainThorns;
+            BossArmor += attack.gainArmor;
+            OnBossAttack?.Invoke(attack);
+        }
+
+        foreach (var p in players) p.block = 0;
 
         if (!players.Exists(p => p.IsAlive)) { SetPhase(GamePhase.Lost); return; }
 
         currentIndex = NextAliveFromStart();
         BeginTurn();
+    }
+
+    BossAttack PickBossAttack()
+    {
+        var list = boss.attacks;
+        if (list.Count == 0) return null;
+
+        int next;
+        if (boss.fixedOrder)
+        {
+            next = (lastBossAttack + 1) % list.Count;
+        }
+        else
+        {
+            do next = UnityEngine.Random.Range(0, list.Count);
+            while (list.Count > 1 && next == lastBossAttack);
+        }
+        lastBossAttack = next;
+        return list[next];
     }
 
     int NextAliveFromStart()

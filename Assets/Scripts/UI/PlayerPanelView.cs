@@ -1,22 +1,24 @@
 using System;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-// Liga os pedacos de UI de um jogador (retrato, vida, slots, mao) ao PlayerState.
 public class PlayerPanelView : MonoBehaviour
 {
     [Header("Referencias (arraste do Canvas)")]
     public Image portrait;
+    public Image cardMarker;
     public Slider healthBar;
-    public Image[] slotImages;           // Slot0..2
+    public TMP_Text healthText;
+    public Image[] slotImages;
     public Transform handRoot;
 
     [Header("Cartas")]
     public CardView cardPrefab;
-    public Sprite cardBack;              // verso mostrado nas maos dos outros jogadores
+    public Sprite cardBack;
 
     public event Action<CardView> HandCardClicked;
-    public event Action<int> SlotClicked;   // indice do slot
+    public event Action<int> SlotClicked;
 
     readonly System.Collections.Generic.List<CardView> handViews = new();
     SlotView[] slots;
@@ -34,7 +36,6 @@ public class PlayerPanelView : MonoBehaviour
         }
     }
 
-    // isCurrent: mao aberta e clicavel so para o jogador da vez.
     public void Refresh(PlayerState player, bool isCurrent, CardData selected)
     {
         if (portrait != null)
@@ -46,8 +47,11 @@ public class PlayerPanelView : MonoBehaviour
             portrait.transform.localScale = isCurrent ? Vector3.one * 1.15f : Vector3.one;
         }
 
+        if (cardMarker != null) cardMarker.sprite = player.classData.suitSprite;
+
         healthBar.maxValue = player.classData.maxHealth;
         healthBar.value = player.health;
+        if (healthText != null) healthText.text = $"{player.health}/{player.classData.maxHealth}";
 
         for (int i = 0; i < slots.Length; i++)
             slots[i].Show(i < player.slots.Length ? player.slots[i] : null);

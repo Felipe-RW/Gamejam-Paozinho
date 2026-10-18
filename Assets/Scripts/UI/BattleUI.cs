@@ -3,7 +3,6 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-// Maestro da tela: escuta o GameManager e repassa o estado para os paineis.
 public class BattleUI : MonoBehaviour
 {
     [Header("Jogo")]
@@ -15,6 +14,10 @@ public class BattleUI : MonoBehaviour
     [Header("Chefe")]
     public Slider bossHealthBar;
     public TMP_Text bossHealthText;
+    public Image bossSprite;
+    public TMP_Text bossArmorText;
+    public TMP_Text bossBlockText;
+    public TMP_Text bossThornsText;
 
     [Header("HUD")]
     public Button endTurnButton;
@@ -76,10 +79,17 @@ public class BattleUI : MonoBehaviour
             if (exists) panels[i].Refresh(players[i], players[i] == gameManager.CurrentPlayer, selected);
         }
 
-        bossHealthBar.maxValue = gameManager.bossMaxHealth;
+        var boss = gameManager.Boss;
+        if (bossSprite != null) bossSprite.sprite = boss.sprite;
+
+        bossHealthBar.maxValue = gameManager.BossMaxHealth;
         bossHealthBar.value = gameManager.BossHealth;
         if (bossHealthText != null)
-            bossHealthText.text = $"{gameManager.BossHealth}/{gameManager.bossMaxHealth}";
+            bossHealthText.text = $"{gameManager.BossHealth}/{gameManager.BossMaxHealth}";
+
+        if (bossArmorText != null) bossArmorText.text = gameManager.BossArmor.ToString();
+        if (bossBlockText != null) bossBlockText.text = gameManager.BossBlock.ToString();
+        if (bossThornsText != null) bossThornsText.text = gameManager.BossThorns.ToString();
 
         endTurnButton.interactable = gameManager.Phase == GamePhase.PlayerTurn;
 
