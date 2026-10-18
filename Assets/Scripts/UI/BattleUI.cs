@@ -22,11 +22,12 @@ public class BattleUI : MonoBehaviour
     [Header("HUD")]
     public Button endTurnButton;
 
-    [Header("Teste (remover quando existir a selecao de classe)")]
+    [Header("Teste: classe de cada posicao (vazio = sem jogador)")]
     public bool startOnPlay = true;
-    public List<ClassData> debugClasses = new();
+    public ClassData[] seatClasses = new ClassData[4];
 
     CardData selected;
+    readonly List<int> seatOfPlayer = new();
 
     void OnEnable()
     {
@@ -42,9 +43,9 @@ public class BattleUI : MonoBehaviour
     {
         for (int i = 0; i < panels.Length; i++)
         {
-            int playerIndex = i;
+            int seat = i;
             panels[i].HandCardClicked += OnHandCardClicked;
-            panels[i].SlotClicked += slot => OnSlotClicked(playerIndex, slot);
+            panels[i].SlotClicked += slot => OnSlotClicked(seat, slot);
         }
 
         endTurnButton.onClick.AddListener(() =>
@@ -53,7 +54,17 @@ public class BattleUI : MonoBehaviour
             gameManager.EndTurn();
         });
 
-        if (startOnPlay) gameManager.StartGame(debugClasses);
+        if (!startOnPlay) return;
+
+        var chosen = new List<ClassData>();
+        seatOfPlayer.Clear();
+        for (int seat = 0; seat < seatClasses.Length && seat < panels.Length; seat++)
+        {
+            if (seatClasses[seat] == null) continue;
+            chosen.Add(seatClasses[seat]);
+            seatOfPlayer.Add(seat);
+        }
+        gameManager.StartGame(chosen);
     }
 
     void OnHandCardClicked(CardView view)
@@ -62,9 +73,11 @@ public class BattleUI : MonoBehaviour
         Refresh();
     }
 
-    void OnSlotClicked(int playerIndex, int slotIndex)
+    void OnSlotClicked(int seat, int slotIndex)
     {
         if (selected == null) return;
+        int playerIndex = seatOfPlayer.IndexOf(seat);
+        if (playerIndex < 0) return;
         if (gameManager.PlayCard(selected, playerIndex, slotIndex)) selected = null;
     }
 
@@ -72,11 +85,12 @@ public class BattleUI : MonoBehaviour
     {
         var players = gameManager.Players;
 
-        for (int i = 0; i < panels.Length; i++)
+        for (int seat = 0; seat < panels.Length; seat++)
         {
-            bool exists = i < players.Count;
-            panels[i].gameObject.SetActive(exists);
-            if (exists) panels[i].Refresh(players[i], players[i] == gameManager.CurrentPlayer, selected);
+            int playerIndex = seatOfPlayer.IndexOf(seat);
+            bool exists = playerIndex >= 0 && playerIndex < players.Count;
+            panels[seat].SetVisible(exists);
+            if (exists) panels[seat].Refresh(players[playerIndex], players[playerIndex] == gameManager.CurrentPlayer, selected);
         }
 
         var boss = gameManager.Boss;

@@ -12,6 +12,7 @@ public class PlayerPanelView : MonoBehaviour
     public TMP_Text healthText;
     public Image[] slotImages;
     public Transform handRoot;
+    public GameObject[] extraObjects;
 
     [Header("Cartas")]
     public CardView cardPrefab;
@@ -34,6 +35,14 @@ public class PlayerPanelView : MonoBehaviour
             slot.Clicked += idx => SlotClicked?.Invoke(idx);
             slots[i] = slot;
         }
+    }
+
+    public void SetVisible(bool visible)
+    {
+        gameObject.SetActive(visible);
+        healthBar.gameObject.SetActive(visible);
+        if (slotImages.Length > 0) slotImages[0].transform.parent.gameObject.SetActive(visible);
+        foreach (var obj in extraObjects) if (obj != null) obj.SetActive(visible);
     }
 
     public void Refresh(PlayerState player, bool isCurrent, CardData selected)
