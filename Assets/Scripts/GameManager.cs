@@ -12,6 +12,8 @@ public class GameManager : MonoBehaviour
     [Header("Chefe")]
     public BossData boss;
     public float bossRollSeconds = 2f;
+    public float bossBulletSeconds = 0.8f;
+    public float bossHitPause = 0.6f;
     [Range(0, 2)] public int difficulty;
 
     [Header("Menu")]
@@ -42,6 +44,11 @@ public class GameManager : MonoBehaviour
     public event Action<PlayerState, Suit, int> OnEffectApplied;
     public event Action<BossAttack> OnBossMoveChosen;
     public event Action<BossAttack> OnBossAttack;
+    public event Action<BossAttack> OnBossAttackStart;
+    public event Action OnBossAttackEnd;
+    public event Action<BossAttack> OnBossDefense;
+    public event Action<int, int> OnBossHit;
+    public event Action<PlayerState, int> OnPlayerDamaged;
     public event Action<GamePhase> OnPhaseChanged;
 
     readonly List<PlayerState> players = new();
@@ -103,11 +110,8 @@ public class GameManager : MonoBehaviour
         yield return new WaitForSeconds(bossRollSeconds);
 
         CurrentBossAttack = PickBossAttack();
-        var move = CurrentBossAttack;
-        if (move != null) BossArmor += move.gainArmor;
-        BossBlock = BossArmor + (move != null ? move.gainBlock : 0);
-        if (move != null) BossThorns += move.gainThorns;
-        OnBossMoveChosen?.Invoke(move);
+        BossBlock = BossArmor;
+        OnBossMoveChosen?.Invoke(CurrentBossAttack);
 
         currentIndex = NextAliveFromStart();
         BeginTurn();
@@ -165,9 +169,22 @@ public class GameManager : MonoBehaviour
         return -1;
     }
 
+    void ApplyBossDefense()
+    {
+        var move = CurrentBossAttack;
+        if (move == null) return;
+
+        BossArmor += move.gainArmor;
+        BossBlock = BossArmor + move.gainBlock;
+        BossThorns += move.gainThorns;
+
+        if (move.gainBlock > 0 || move.gainArmor > 0) OnBossDefense?.Invoke(move);
+    }
+
     void ResolveRound()
     {
         SetPhase(GamePhase.Resolving);
+        ApplyBossDefense();
 
         for (int o = 0; o < players.Count; o++)
         {
@@ -187,7 +204,7 @@ public class GameManager : MonoBehaviour
         }
 
         if (BossHealth <= 0) { SetPhase(GamePhase.Won); return; }
-        BossAttackPhase();
+        StartCoroutine(BossAttackRoutine());
     }
 
     void ApplySuitEffect(int ownerIndex, int playedBy, Suit suit, int amount)
@@ -216,8 +233,13 @@ public class GameManager : MonoBehaviour
         int absorbed = Mathf.Min(BossBlock, amount);
         BossBlock -= absorbed;
         BossHealth = Mathf.Max(0, BossHealth - (amount - absorbed));
+        OnBossHit?.Invoke(amount - absorbed, absorbed);
 
-        if (BossThorns > 0) players[attackerIndex].TakeDamage(BossThorns);
+        if (BossThorns > 0)
+        {
+            players[attackerIndex].TakeDamage(BossThorns);
+            OnPlayerDamaged?.Invoke(players[attackerIndex], BossThorns);
+        }
     }
 
     void DrawClockwise(int startIndex, int count)
@@ -236,23 +258,35 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    void BossAttackPhase()
+    IEnumerator BossAttackRoutine()
     {
         SetPhase(GamePhase.BossTurn);
 
         var attack = CurrentBossAttack;
-        if (attack != null)
+        if (attack != null && attack.damage > 0)
         {
-            for (int h = 0; h < attack.hits && attack.damage > 0; h++)
-                foreach (var p in players)
-                    if (p.IsAlive) p.TakeDamage(attack.damage);
+            for (int h = 0; h < attack.hits; h++)
+            {
+                OnBossAttackStart?.Invoke(attack);
+                yield return new WaitForSeconds(bossBulletSeconds);
 
-            OnBossAttack?.Invoke(attack);
+                foreach (var p in players)
+                {
+                    if (!p.IsAlive) continue;
+                    p.TakeDamage(attack.damage);
+                    OnPlayerDamaged?.Invoke(p, attack.damage);
+                }
+                OnStateChanged?.Invoke();
+                yield return new WaitForSeconds(bossHitPause);
+            }
+            OnBossAttackEnd?.Invoke();
         }
+
+        if (attack != null) OnBossAttack?.Invoke(attack);
 
         foreach (var p in players) p.block = 0;
 
-        if (!players.Exists(p => p.IsAlive)) { SetPhase(GamePhase.Lost); return; }
+        if (!players.Exists(p => p.IsAlive)) { SetPhase(GamePhase.Lost); yield break; }
 
         StartCoroutine(BeginRound());
     }

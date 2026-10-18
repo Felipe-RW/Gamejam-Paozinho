@@ -18,6 +18,9 @@ public class PlayerPanelView : MonoBehaviour
     public CardView cardPrefab;
     public Sprite cardBack;
 
+    public RectTransform effectArea;
+    public RectTransform EffectAnchor => effectArea != null ? effectArea : portrait != null ? portrait.rectTransform : (RectTransform)transform;
+
     public event Action<CardView> HandCardClicked;
     public event Action<int> SlotClicked;
 

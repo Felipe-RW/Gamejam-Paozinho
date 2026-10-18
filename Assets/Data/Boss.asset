@@ -15,7 +15,7 @@ MonoBehaviour:
   displayName: Valete de Paus
   sprite: {fileID: -8209682524755876957, guid: 4d954b6f5b94eda41ba5a4cbf0fdb671, type: 3}
   healthByDifficulty: 5000000078000000a0000000i
-  startingArmor: 0
+  startingArmor: 4
   attacks:
   - attackName: Ataque Forte
     icon: {fileID: 3463658362275521134, guid: 17c17f3346dc7444493962d769b176e0, type: 3}
