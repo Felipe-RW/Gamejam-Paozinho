@@ -1,15 +1,17 @@
 using System.Diagnostics;
 using System.Security.Permissions;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class MenuMeneger : MonoBehaviour
 {
+    public string abrirplayers;
     public GameObject painelMenuPrincipal;
     public GameObject painelOpcoes;
 
     public void jogar()
     {
-        
+        SceneManager.LoadScene(abrirplayers);
     }
     
     public void AbrirOpcoes()
