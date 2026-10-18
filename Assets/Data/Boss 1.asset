@@ -12,9 +12,30 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dd7cd583a665af549a0e43c870432908, type: 3}
   m_Name: Boss 1
   m_EditorClassIdentifier: Assembly-CSharp::BossData
-  displayName: 
-  sprite: {fileID: 0}
-  healthByPlayerCount: 3c0000005000000078000000a0000000i
+  displayName: "Drag\xE3o de Bronze"
+  sprite: {fileID: 5214463068896568337, guid: 0dc6f3124687c5147b4f4ce6364f3461, type: 3}
+  healthByPlayerCount: 50000000640000008c000000b4000000i
   startingArmor: 0
-  attacks: []
+  attacks:
+  - attackName: Cuspir Fogo
+    icon: {fileID: 8320824912735345967, guid: cefc70f59d33549449c2bfcb0ae8c619, type: 3}
+    damage: 6
+    hits: 3
+    gainBlock: 0
+    gainThorns: 0
+    gainArmor: 0
+  - attackName: Morder
+    icon: {fileID: -3374298318667208731, guid: a11b9a243de8d8444927f9a930a25b69, type: 3}
+    damage: 16
+    hits: 1
+    gainBlock: 6
+    gainThorns: 0
+    gainArmor: 0
+  - attackName: Rejuvenescer
+    icon: {fileID: 3694609330789066741, guid: c957c5e7e6fd67f4aad7ca7865eedd64, type: 3}
+    damage: 0
+    hits: 1
+    gainBlock: 16
+    gainThorns: 0
+    gainArmor: 2
   fixedOrder: 0
