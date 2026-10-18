@@ -857,6 +857,7 @@ MonoBehaviour:
   - {fileID: 503546861}
   - {fileID: 933178783}
   handRoot: {fileID: 1488368045}
+  extraObjects: []
   cardPrefab: {fileID: 6315835635617279120, guid: 3873b3921908fbe488c6a1d27012e5b7, type: 3}
   cardBack: {fileID: 2265309696853736821, guid: ae233381eb9169f47ab4fd458ca9e145, type: 3}
 --- !u!1 &312835608
@@ -2517,6 +2518,7 @@ MonoBehaviour:
   - {fileID: 1285578616}
   - {fileID: 2037878039}
   handRoot: {fileID: 1437447690}
+  extraObjects: []
   cardPrefab: {fileID: 6315835635617279120, guid: 3873b3921908fbe488c6a1d27012e5b7, type: 3}
   cardBack: {fileID: 2265309696853736821, guid: ae233381eb9169f47ab4fd458ca9e145, type: 3}
 --- !u!1 &991613435
@@ -4333,11 +4335,11 @@ MonoBehaviour:
   bossThornsText: {fileID: 95135660}
   endTurnButton: {fileID: 1246271206}
   startOnPlay: 1
-  debugClasses:
-  - {fileID: 11400000, guid: df8945feced0abb4a8b162af8a530c7d, type: 2}
-  - {fileID: 11400000, guid: 57e526eecf88e684db5ae388d3d57321, type: 2}
-  - {fileID: 11400000, guid: 8d455eb4073e4b244be09ae3095267d0, type: 2}
+  seatClasses:
   - {fileID: 11400000, guid: 4d70cf1f92542fa42a94d0a8aad70604, type: 2}
+  - {fileID: 11400000, guid: df8945feced0abb4a8b162af8a530c7d, type: 2}
+  - {fileID: 11400000, guid: 8d455eb4073e4b244be09ae3095267d0, type: 2}
+  - {fileID: 11400000, guid: 57e526eecf88e684db5ae388d3d57321, type: 2}
 --- !u!1 &1437447689
 GameObject:
   m_ObjectHideFlags: 0
@@ -4535,6 +4537,7 @@ MonoBehaviour:
   - {fileID: 1157441394}
   - {fileID: 174621350}
   handRoot: {fileID: 38933463}
+  extraObjects: []
   cardPrefab: {fileID: 6315835635617279120, guid: 3873b3921908fbe488c6a1d27012e5b7, type: 3}
   cardBack: {fileID: 2265309696853736821, guid: ae233381eb9169f47ab4fd458ca9e145, type: 3}
 --- !u!1 &1488368044
@@ -5460,6 +5463,7 @@ MonoBehaviour:
   - {fileID: 911824979}
   - {fileID: 738512026}
   handRoot: {fileID: 2091619141}
+  extraObjects: []
   cardPrefab: {fileID: 6315835635617279120, guid: 3873b3921908fbe488c6a1d27012e5b7, type: 3}
   cardBack: {fileID: 2265309696853736821, guid: ae233381eb9169f47ab4fd458ca9e145, type: 3}
 --- !u!1 &1988584772
