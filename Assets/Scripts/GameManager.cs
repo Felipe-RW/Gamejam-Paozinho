@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public enum GamePhase { Setup, PlayerTurn, Resolving, BossTurn, Won, Lost }
 
@@ -10,6 +11,10 @@ public class GameManager : MonoBehaviour
     [Header("Chefe")]
     public BossData boss;
     [Range(0, 2)] public int difficulty;
+
+    [Header("Menu")]
+    public GameObject menuPanel;
+    public string menuScene = "Menu";
 
     [Header("Regras")]
     public int suitBonus = 2;
@@ -64,6 +69,21 @@ public class GameManager : MonoBehaviour
     }
 
     public static int HandLimitFor(int playerCount) => 9 - playerCount;
+
+    void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape)) ToggleMenu();
+    }
+
+    public void ToggleMenu()
+    {
+        if (menuPanel != null) menuPanel.SetActive(!menuPanel.activeSelf);
+    }
+
+    public void BackToMenu()
+    {
+        SceneManager.LoadScene(menuScene);
+    }
 
     void SetPhase(GamePhase phase)
     {

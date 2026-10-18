@@ -62,7 +62,7 @@ public class BattleUI : MonoBehaviour
 
         var chosen = new List<ClassData>();
         seatOfPlayer.Clear();
-        for (int seat = 0; seat < source.Length && seat < panels.Length; seat++)
+        for (int seat = 0; seat < source.Length && chosen.Count < panels.Length; seat++)
         {
             if (source[seat] == null) continue;
             chosen.Add(source[seat]);

@@ -28,8 +28,13 @@ public class PlayerSelectMenu : MonoBehaviour
 
     void StartBattle()
     {
-        for (int i = 0; i < cards.Length && i < GameSession.SeatClasses.Length; i++)
-            GameSession.SeatClasses[i] = cards[i].Confirmed;
+        System.Array.Clear(GameSession.SeatClasses, 0, GameSession.SeatClasses.Length);
+        int next = 0;
+        foreach (var card in cards)
+        {
+            if (card.Confirmed == null || next >= GameSession.SeatClasses.Length) continue;
+            GameSession.SeatClasses[next++] = card.Confirmed;
+        }
 
         GameSession.HasSelection = true;
         SceneManager.LoadScene(battleScene);
