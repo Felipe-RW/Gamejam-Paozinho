@@ -15,6 +15,6 @@ MonoBehaviour:
   playerClass: 1
   displayName: Paladino
   suit: 1
-  maxHealth: 20
+  maxHealth: 45
   portrait: {fileID: 5890233032349614594, guid: 9f9e9eaf8819c5d409a5e7e64701468c, type: 3}
   suitSprite: {fileID: -853125848767041355, guid: f7e1fa27c660292428e06cb5e19807d4, type: 3}

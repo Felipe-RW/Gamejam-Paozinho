@@ -3210,6 +3210,7 @@ MonoBehaviour:
   extraObjects: []
   cardPrefab: {fileID: 6315835635617279120, guid: 3873b3921908fbe488c6a1d27012e5b7, type: 3}
   cardBack: {fileID: -8246103488371625927, guid: 5e5adf1ac51997f4c902cfd96beebba3, type: 3}
+  effectArea: {fileID: 0}
 --- !u!1 &311644745
 GameObject:
   m_ObjectHideFlags: 0
@@ -5693,6 +5694,7 @@ MonoBehaviour:
   extraObjects: []
   cardPrefab: {fileID: 6315835635617279120, guid: 3873b3921908fbe488c6a1d27012e5b7, type: 3}
   cardBack: {fileID: -8246103488371625927, guid: 5e5adf1ac51997f4c902cfd96beebba3, type: 3}
+  effectArea: {fileID: 0}
 --- !u!224 &533442544
 RectTransform:
   m_ObjectHideFlags: 0
@@ -6130,7 +6132,7 @@ MonoBehaviour:
   - {fileID: 721305441}
   - {fileID: 760188911}
   - {fileID: 1179332883}
-  testPlayerCount: 2
+  testPlayerCount: 4
 --- !u!82 &560971239
 AudioSource:
   m_ObjectHideFlags: 0
@@ -9882,6 +9884,7 @@ MonoBehaviour:
   extraObjects: []
   cardPrefab: {fileID: 6315835635617279120, guid: 3873b3921908fbe488c6a1d27012e5b7, type: 3}
   cardBack: {fileID: -8246103488371625927, guid: 5e5adf1ac51997f4c902cfd96beebba3, type: 3}
+  effectArea: {fileID: 0}
 --- !u!224 &879858578
 RectTransform:
   m_ObjectHideFlags: 0
@@ -11001,6 +11004,7 @@ MonoBehaviour:
   extraObjects: []
   cardPrefab: {fileID: 6315835635617279120, guid: 3873b3921908fbe488c6a1d27012e5b7, type: 3}
   cardBack: {fileID: -8246103488371625927, guid: 5e5adf1ac51997f4c902cfd96beebba3, type: 3}
+  effectArea: {fileID: 0}
 --- !u!224 &977961300
 RectTransform:
   m_ObjectHideFlags: 0
@@ -11086,6 +11090,7 @@ MonoBehaviour:
   extraObjects: []
   cardPrefab: {fileID: 6315835635617279120, guid: 3873b3921908fbe488c6a1d27012e5b7, type: 3}
   cardBack: {fileID: -8246103488371625927, guid: 5e5adf1ac51997f4c902cfd96beebba3, type: 3}
+  effectArea: {fileID: 0}
 --- !u!1 &991613435
 GameObject:
   m_ObjectHideFlags: 0
@@ -12697,6 +12702,7 @@ MonoBehaviour:
   extraObjects: []
   cardPrefab: {fileID: 6315835635617279120, guid: 3873b3921908fbe488c6a1d27012e5b7, type: 3}
   cardBack: {fileID: -8246103488371625927, guid: 5e5adf1ac51997f4c902cfd96beebba3, type: 3}
+  effectArea: {fileID: 0}
 --- !u!224 &1130465090
 RectTransform:
   m_ObjectHideFlags: 0
@@ -15407,6 +15413,7 @@ MonoBehaviour:
   extraObjects: []
   cardPrefab: {fileID: 6315835635617279120, guid: 3873b3921908fbe488c6a1d27012e5b7, type: 3}
   cardBack: {fileID: -8246103488371625927, guid: 5e5adf1ac51997f4c902cfd96beebba3, type: 3}
+  effectArea: {fileID: 0}
 --- !u!224 &1343326082
 RectTransform:
   m_ObjectHideFlags: 0
@@ -15470,6 +15477,7 @@ MonoBehaviour:
   extraObjects: []
   cardPrefab: {fileID: 6315835635617279120, guid: 3873b3921908fbe488c6a1d27012e5b7, type: 3}
   cardBack: {fileID: -8246103488371625927, guid: 5e5adf1ac51997f4c902cfd96beebba3, type: 3}
+  effectArea: {fileID: 0}
 --- !u!224 &1343778526
 RectTransform:
   m_ObjectHideFlags: 0
@@ -16107,6 +16115,7 @@ MonoBehaviour:
   extraObjects: []
   cardPrefab: {fileID: 6315835635617279120, guid: 3873b3921908fbe488c6a1d27012e5b7, type: 3}
   cardBack: {fileID: -8246103488371625927, guid: 5e5adf1ac51997f4c902cfd96beebba3, type: 3}
+  effectArea: {fileID: 0}
 --- !u!224 &1377911252
 RectTransform:
   m_ObjectHideFlags: 0
@@ -16260,8 +16269,8 @@ MonoBehaviour:
   seatClasses:
   - {fileID: 11400000, guid: df8945feced0abb4a8b162af8a530c7d, type: 2}
   - {fileID: 11400000, guid: 4d70cf1f92542fa42a94d0a8aad70604, type: 2}
-  - {fileID: 0}
-  - {fileID: 0}
+  - {fileID: 11400000, guid: 8d455eb4073e4b244be09ae3095267d0, type: 2}
+  - {fileID: 11400000, guid: 57e526eecf88e684db5ae388d3d57321, type: 2}
 --- !u!114 &1390844405
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -17615,6 +17624,7 @@ MonoBehaviour:
   extraObjects: []
   cardPrefab: {fileID: 6315835635617279120, guid: 3873b3921908fbe488c6a1d27012e5b7, type: 3}
   cardBack: {fileID: -8246103488371625927, guid: 5e5adf1ac51997f4c902cfd96beebba3, type: 3}
+  effectArea: {fileID: 0}
 --- !u!1 &1482041222
 GameObject:
   m_ObjectHideFlags: 0
@@ -17678,6 +17688,7 @@ MonoBehaviour:
   extraObjects: []
   cardPrefab: {fileID: 6315835635617279120, guid: 3873b3921908fbe488c6a1d27012e5b7, type: 3}
   cardBack: {fileID: -8246103488371625927, guid: 5e5adf1ac51997f4c902cfd96beebba3, type: 3}
+  effectArea: {fileID: 0}
 --- !u!1 &1488368044
 GameObject:
   m_ObjectHideFlags: 0
@@ -19066,6 +19077,7 @@ MonoBehaviour:
   extraObjects: []
   cardPrefab: {fileID: 6315835635617279120, guid: 3873b3921908fbe488c6a1d27012e5b7, type: 3}
   cardBack: {fileID: -8246103488371625927, guid: 5e5adf1ac51997f4c902cfd96beebba3, type: 3}
+  effectArea: {fileID: 0}
 --- !u!1 &1568735086
 GameObject:
   m_ObjectHideFlags: 0
@@ -19658,6 +19670,7 @@ MonoBehaviour:
   extraObjects: []
   cardPrefab: {fileID: 6315835635617279120, guid: 3873b3921908fbe488c6a1d27012e5b7, type: 3}
   cardBack: {fileID: -8246103488371625927, guid: 5e5adf1ac51997f4c902cfd96beebba3, type: 3}
+  effectArea: {fileID: 0}
 --- !u!1 &1619209578
 GameObject:
   m_ObjectHideFlags: 0
@@ -20504,6 +20517,7 @@ MonoBehaviour:
   extraObjects: []
   cardPrefab: {fileID: 6315835635617279120, guid: 3873b3921908fbe488c6a1d27012e5b7, type: 3}
   cardBack: {fileID: -8246103488371625927, guid: 5e5adf1ac51997f4c902cfd96beebba3, type: 3}
+  effectArea: {fileID: 0}
 --- !u!224 &1693558425
 RectTransform:
   m_ObjectHideFlags: 0
@@ -20740,6 +20754,7 @@ MonoBehaviour:
   extraObjects: []
   cardPrefab: {fileID: 6315835635617279120, guid: 3873b3921908fbe488c6a1d27012e5b7, type: 3}
   cardBack: {fileID: -8246103488371625927, guid: 5e5adf1ac51997f4c902cfd96beebba3, type: 3}
+  effectArea: {fileID: 0}
 --- !u!224 &1726343406
 RectTransform:
   m_ObjectHideFlags: 0
@@ -23841,6 +23856,7 @@ MonoBehaviour:
   extraObjects: []
   cardPrefab: {fileID: 6315835635617279120, guid: 3873b3921908fbe488c6a1d27012e5b7, type: 3}
   cardBack: {fileID: -8246103488371625927, guid: 5e5adf1ac51997f4c902cfd96beebba3, type: 3}
+  effectArea: {fileID: 0}
 --- !u!1 &1988584772
 GameObject:
   m_ObjectHideFlags: 0

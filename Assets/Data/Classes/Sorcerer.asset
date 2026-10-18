@@ -15,6 +15,6 @@ MonoBehaviour:
   playerClass: 3
   displayName: Feiticeiro
   suit: 3
-  maxHealth: 20
+  maxHealth: 35
   portrait: {fileID: -713130514836291391, guid: c212c6b1e2ba95d4a9404b95b8b2b10b, type: 3}
   suitSprite: {fileID: -366921878990213715, guid: 986113c30160b7a40812d048165ebbea, type: 3}
