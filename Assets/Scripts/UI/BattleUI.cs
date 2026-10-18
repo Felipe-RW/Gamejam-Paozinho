@@ -81,6 +81,19 @@ public class BattleUI : MonoBehaviour
         gameManager.StartGame(chosen);
     }
 
+    public RectTransform BossAnchor => bossSprite != null ? bossSprite.rectTransform : null;
+
+    public RectTransform GetPlayerAnchor(PlayerState player)
+    {
+        int playerIndex = -1;
+        for (int i = 0; i < gameManager.Players.Count; i++)
+            if (gameManager.Players[i] == player) playerIndex = i;
+
+        if (playerIndex < 0 || playerIndex >= seatOfPlayer.Count) return null;
+        int seat = seatOfPlayer[playerIndex];
+        return seat < panels.Length ? panels[seat].EffectAnchor : null;
+    }
+
     void OnPhaseChanged(GamePhase phase)
     {
         if (phase != GamePhase.BossRoll) return;
