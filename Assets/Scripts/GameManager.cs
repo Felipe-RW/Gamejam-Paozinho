@@ -5,16 +5,16 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public enum GamePhase { Setup, BossRoll, PlayerTurn, Resolving, BossTurn, Won, Lost }
+public enum GamePhase { Setup, Dealing, BossRoll, PlayerTurn, Resolving, BossTurn, Won, Lost }
 
 public class GameManager : MonoBehaviour
 {
     [Header("Chefe")]
     public BossData boss;
     public float bossRollSeconds = 2f;
+    public float dealSeconds = 0.25f;
     public float bossBulletSeconds = 0.8f;
     public float bossHitPause = 0.6f;
-    [Range(0, 2)] public int difficulty;
 
     [Header("Menu")]
     public GameObject menuPanel;
@@ -30,7 +30,7 @@ public class GameManager : MonoBehaviour
     public GamePhase Phase { get; private set; } = GamePhase.Setup;
     public int BossHealth { get; private set; }
     public BossData Boss => boss;
-    public int BossMaxHealth => boss.healthByDifficulty[Mathf.Clamp(difficulty, 0, boss.healthByDifficulty.Length - 1)];
+    public int BossMaxHealth => boss.healthByPlayerCount[Mathf.Clamp(players.Count - 1, 0, boss.healthByPlayerCount.Length - 1)];
     public int BossBlock { get; private set; }
     public int BossThorns { get; private set; }
     public int BossArmor { get; private set; }
@@ -44,6 +44,7 @@ public class GameManager : MonoBehaviour
     public event Action<PlayerState, Suit, int> OnEffectApplied;
     public event Action<BossAttack> OnBossMoveChosen;
     public event Action<BossAttack> OnBossAttack;
+    public event Action<PlayerState, CardData> OnCardDealStart;
     public event Action<BossAttack> OnBossAttackStart;
     public event Action OnBossAttackEnd;
     public event Action<BossAttack> OnBossDefense;
@@ -74,10 +75,9 @@ public class GameManager : MonoBehaviour
         BossThorns = 0;
         CurrentBossAttack = null;
         lastBossAttack = -1;
-        foreach (var p in players) p.hand.FillFrom(p.deck);
 
         StopAllCoroutines();
-        StartCoroutine(BeginRound());
+        StartCoroutine(StartRoutine());
     }
 
     public static int HandLimitFor(int playerCount) => 9 - playerCount;
@@ -104,6 +104,51 @@ public class GameManager : MonoBehaviour
         OnStateChanged?.Invoke();
     }
 
+    IEnumerator StartRoutine()
+    {
+        SetPhase(GamePhase.Dealing);
+        yield return null;
+
+        foreach (var p in players)
+            while (!p.hand.IsFull)
+            {
+                var card = p.deck.Draw();
+                if (card == null) break;
+                yield return DealCard(p, card);
+            }
+
+        StartCoroutine(BeginRound());
+    }
+
+    IEnumerator DealCard(PlayerState player, CardData card)
+    {
+        OnCardDealStart?.Invoke(player, card);
+        yield return new WaitForSeconds(dealSeconds);
+        player.hand.Add(card);
+        OnStateChanged?.Invoke();
+    }
+
+    IEnumerator DrawRoutine(int startIndex, int count)
+    {
+        while (count > 0)
+        {
+            bool drewAny = false;
+            for (int k = 0; k < players.Count && count > 0; k++)
+            {
+                var p = players[(startIndex + k) % players.Count];
+                if (!p.IsAlive || p.hand.IsFull) continue;
+
+                var card = p.deck.Draw();
+                if (card == null) continue;
+
+                yield return DealCard(p, card);
+                count--;
+                drewAny = true;
+            }
+            if (!drewAny) yield break;
+        }
+    }
+
     IEnumerator BeginRound()
     {
         SetPhase(GamePhase.BossRoll);
@@ -120,7 +165,6 @@ public class GameManager : MonoBehaviour
     void BeginTurn()
     {
         CardsPlayedThisTurn = 0;
-        CurrentPlayer.hand.FillFrom(CurrentPlayer.deck);
         SetPhase(GamePhase.PlayerTurn);
     }
 
@@ -146,6 +190,24 @@ public class GameManager : MonoBehaviour
         return true;
     }
 
+    public bool ReturnCard(int targetPlayerIndex, int slotIndex)
+    {
+        if (Phase != GamePhase.PlayerTurn) return false;
+        if (targetPlayerIndex < 0 || targetPlayerIndex >= players.Count) return false;
+
+        var target = players[targetPlayerIndex];
+        if (slotIndex < 0 || slotIndex >= target.slots.Length) return false;
+
+        var card = target.slots[slotIndex];
+        if (card == null || target.slotPlayedBy[slotIndex] != currentIndex) return false;
+
+        target.slots[slotIndex] = null;
+        CurrentPlayer.hand.Add(card);
+        CardsPlayedThisTurn = Mathf.Max(0, CardsPlayedThisTurn - 1);
+        OnStateChanged?.Invoke();
+        return true;
+    }
+
     public void EndTurn()
     {
         if (Phase != GamePhase.PlayerTurn) return;
@@ -158,7 +220,7 @@ public class GameManager : MonoBehaviour
         }
         else
         {
-            ResolveRound();
+            StartCoroutine(ResolveRoundRoutine());
         }
     }
 
@@ -181,7 +243,7 @@ public class GameManager : MonoBehaviour
         if (move.gainBlock > 0 || move.gainArmor > 0) OnBossDefense?.Invoke(move);
     }
 
-    void ResolveRound()
+    IEnumerator ResolveRoundRoutine()
     {
         SetPhase(GamePhase.Resolving);
         ApplyBossDefense();
@@ -196,14 +258,16 @@ public class GameManager : MonoBehaviour
 
                 var player = players[owner.slotPlayedBy[i]];
                 int amount = card.value + (card.suit == player.classData.suit ? suitBonus : 0);
-                ApplySuitEffect(o, owner.slotPlayedBy[i], card.suit, amount);
-
                 player.deck.Discard(card);
                 owner.slots[i] = null;
+                OnStateChanged?.Invoke();
+
+                ApplySuitEffect(o, owner.slotPlayedBy[i], card.suit, amount);
+                if (card.suit == Suit.Diamonds) yield return DrawRoutine(o, amount);
             }
         }
 
-        if (BossHealth <= 0) { SetPhase(GamePhase.Won); return; }
+        if (BossHealth <= 0) { SetPhase(GamePhase.Won); yield break; }
         StartCoroutine(BossAttackRoutine());
     }
 
@@ -221,9 +285,6 @@ public class GameManager : MonoBehaviour
             case Suit.Hearts:
                 owner.Heal(amount);
                 break;
-            case Suit.Diamonds:
-                DrawClockwise(ownerIndex, amount);
-                break;
         }
         OnEffectApplied?.Invoke(owner, suit, amount);
     }
@@ -239,22 +300,6 @@ public class GameManager : MonoBehaviour
         {
             players[attackerIndex].TakeDamage(BossThorns);
             OnPlayerDamaged?.Invoke(players[attackerIndex], BossThorns);
-        }
-    }
-
-    void DrawClockwise(int startIndex, int count)
-    {
-        while (count > 0)
-        {
-            bool drewAny = false;
-            for (int k = 0; k < players.Count && count > 0; k++)
-            {
-                var p = players[(startIndex + k) % players.Count];
-                if (!p.IsAlive || !p.hand.DrawOne(p.deck)) continue;
-                count--;
-                drewAny = true;
-            }
-            if (!drewAny) return;
         }
     }
 
