@@ -7,6 +7,7 @@ public class MenuMeneger : MonoBehaviour
     public string abrirplayers;
     public GameObject painelMenuPrincipal;
     public GameObject painelOpcoes;
+    public GameObject painelRegras;
 
     public void jogar()
     {
@@ -25,6 +26,19 @@ public class MenuMeneger : MonoBehaviour
         painelMenuPrincipal.SetActive(true);
         
     }
+
+    public void AbrirRegras()
+    {
+        painelRegras.SetActive(true);
+        painelMenuPrincipal.SetActive(false);
+
+    }
+    public void FecharRegras()
+    {
+        painelMenuPrincipal.SetActive(true);
+        painelRegras.SetActive(false);
+    }
+
 
      public void Sair()
     {
