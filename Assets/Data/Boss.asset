@@ -14,23 +14,31 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BossData
   displayName: Valete de Paus
   sprite: {fileID: 5214463068896568337, guid: 0dc6f3124687c5147b4f4ce6364f3461, type: 3}
-  healthByDifficulty: 5000000078000000a0000000i
-  startingArmor: 4
+  healthByPlayerCount: 010000005000000078000000a0000000i
+  startingArmor: 0
   attacks:
   - attackName: Ataque Forte
     icon: {fileID: 3463658362275521134, guid: 17c17f3346dc7444493962d769b176e0, type: 3}
-    damage: 14
+    damage: 1
     hits: 1
     gainBlock: 0
     gainThorns: 0
     gainArmor: 0
+    bulletPrefab: {fileID: 2579515541602230385, guid: 2c82a159ec3429143b2c92990398fe1d, type: 3}
+    hitEffectPrefab: {fileID: 8757852324052259867, guid: e3d6ce5ef7c363d4eaa2fcb1a1932d17, type: 3}
+    hitEffectSeconds: 1.5
+    hitEffectScale: 1
   - attackName: Golpe de Escudo
     icon: {fileID: 4951810628055396208, guid: 10eb6a4b0c1a37b4f8cb0a4cf14c486e, type: 3}
-    damage: 8
+    damage: 1
     hits: 1
     gainBlock: 10
     gainThorns: 0
     gainArmor: 0
+    bulletPrefab: {fileID: 0}
+    hitEffectPrefab: {fileID: 0}
+    hitEffectSeconds: 1.5
+    hitEffectScale: 1
   - attackName: Espinhos Espinhosos
     icon: {fileID: 7941249075350040784, guid: 243f7c3c1295e074b8051027e155d371, type: 3}
     damage: 1
@@ -38,4 +46,8 @@ MonoBehaviour:
     gainBlock: 0
     gainThorns: 2
     gainArmor: 0
+    bulletPrefab: {fileID: 0}
+    hitEffectPrefab: {fileID: 0}
+    hitEffectSeconds: 1.5
+    hitEffectScale: 1
   fixedOrder: 0

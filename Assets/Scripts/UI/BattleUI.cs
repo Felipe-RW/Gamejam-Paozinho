@@ -187,7 +187,6 @@ public class BattleUI : MonoBehaviour
 
         endTurnButton.interactable = gameManager.Phase == GamePhase.PlayerTurn;
 
-        if (gameManager.Phase == GamePhase.Won) Debug.Log("Vitoria!");
-        else if (gameManager.Phase == GamePhase.Lost) Debug.Log("Derrota");
+        if (gameManager.Phase == GamePhase.Lost) Debug.Log("Derrota");
     }
 }

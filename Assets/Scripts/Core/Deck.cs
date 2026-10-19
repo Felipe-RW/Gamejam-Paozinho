@@ -38,5 +38,26 @@ public class Deck
         return card;
     }
 
+    public CardData TakeMatching(System.Predicate<CardData> match)
+    {
+        int i = drawPile.FindIndex(match);
+        if (i >= 0)
+        {
+            var card = drawPile[i];
+            drawPile.RemoveAt(i);
+            return card;
+        }
+
+        i = discardPile.FindIndex(match);
+        if (i >= 0)
+        {
+            var card = discardPile[i];
+            discardPile.RemoveAt(i);
+            return card;
+        }
+
+        return null;
+    }
+
     public void Discard(CardData card) => discardPile.Add(card);
 }

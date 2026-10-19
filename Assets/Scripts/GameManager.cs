@@ -10,7 +10,10 @@ public enum GamePhase { Setup, Dealing, BossRoll, PlayerTurn, Resolving, BossTur
 public class GameManager : MonoBehaviour
 {
     [Header("Chefe")]
-    public BossData boss;
+    public List<BossData> bosses = new();
+    public int healthPerLap = 10;
+    public int armorPerLap = 2;
+    public float bossTransitionSeconds = 1.5f;
     public float bossRollSeconds = 2f;
     public float dealSeconds = 0.25f;
     public float bossBulletSeconds = 0.8f;
@@ -18,6 +21,7 @@ public class GameManager : MonoBehaviour
 
     [Header("Menu")]
     public GameObject menuPanel;
+    public GameObject defeatPanel;
     public string menuScene = "Menu";
 
     [Header("Regras")]
@@ -29,8 +33,10 @@ public class GameManager : MonoBehaviour
 
     public GamePhase Phase { get; private set; } = GamePhase.Setup;
     public int BossHealth { get; private set; }
-    public BossData Boss => boss;
-    public int BossMaxHealth => boss.healthByPlayerCount[Mathf.Clamp(players.Count - 1, 0, boss.healthByPlayerCount.Length - 1)];
+    public int BossIndex { get; private set; }
+    public int Lap { get; private set; }
+    public BossData Boss => bosses[BossIndex];
+    public int BossMaxHealth => Boss.healthByPlayerCount[Mathf.Clamp(players.Count - 1, 0, Boss.healthByPlayerCount.Length - 1)] + Lap * healthPerLap;
     public int BossBlock { get; private set; }
     public int BossThorns { get; private set; }
     public int BossArmor { get; private set; }
@@ -45,6 +51,8 @@ public class GameManager : MonoBehaviour
     public event Action<BossAttack> OnBossMoveChosen;
     public event Action<BossAttack> OnBossAttack;
     public event Action<PlayerState, CardData> OnCardDealStart;
+    public event Action<BossData> OnBossDefeated;
+    public event Action<BossData> OnBossSpawned;
     public event Action<BossAttack> OnBossAttackStart;
     public event Action OnBossAttackEnd;
     public event Action<BossAttack> OnBossDefense;
@@ -64,17 +72,20 @@ public class GameManager : MonoBehaviour
             return;
         }
 
+        if (bosses.Count == 0)
+        {
+            Debug.LogError("Adicione pelo menos um chefe na lista Bosses do GameManager.");
+            return;
+        }
+
         players.Clear();
         int handLimit = HandLimitFor(chosenClasses.Count);
         foreach (var c in chosenClasses)
             players.Add(new PlayerState(c, slotsPerPlayer, handLimit, new Deck(allCards)));
 
-        BossHealth = BossMaxHealth;
-        BossArmor = boss.startingArmor;
-        BossBlock = 0;
-        BossThorns = 0;
-        CurrentBossAttack = null;
-        lastBossAttack = -1;
+        BossIndex = 0;
+        Lap = 0;
+        ResetBossState();
 
         StopAllCoroutines();
         StartCoroutine(StartRoutine());
@@ -100,8 +111,68 @@ public class GameManager : MonoBehaviour
     void SetPhase(GamePhase phase)
     {
         Phase = phase;
+        if (defeatPanel != null) defeatPanel.SetActive(phase == GamePhase.Lost);
         OnPhaseChanged?.Invoke(phase);
         OnStateChanged?.Invoke();
+    }
+
+    void ResetBossState()
+    {
+        BossHealth = BossMaxHealth;
+        BossArmor = Boss.startingArmor + Lap * armorPerLap;
+        BossBlock = BossArmor;
+        BossThorns = 0;
+        CurrentBossAttack = null;
+        lastBossAttack = -1;
+    }
+
+    IEnumerator NextBossRoutine()
+    {
+        SetPhase(GamePhase.BossTurn);
+        OnBossDefeated?.Invoke(Boss);
+        yield return new WaitForSeconds(bossTransitionSeconds);
+
+        BossIndex++;
+        if (BossIndex >= bosses.Count)
+        {
+            BossIndex = 0;
+            Lap++;
+        }
+
+        ResetBossState();
+        foreach (var p in players) p.block = 0;
+        OnBossSpawned?.Invoke(Boss);
+        StartCoroutine(BeginRound());
+    }
+
+    IEnumerator EnsureHands()
+    {
+        bool any = false;
+        foreach (var p in players)
+        {
+            if (!p.IsAlive || p.hand.Cards.Count > 0) continue;
+
+            if (!any)
+            {
+                any = true;
+                SetPhase(GamePhase.Dealing);
+            }
+
+            var gold = p.deck.TakeMatching(c => c.suit == Suit.Diamonds && c.value > 4);
+            if (gold == null)
+            {
+                var options = allCards.FindAll(c => c.suit == Suit.Diamonds && c.value > 4);
+                if (options.Count > 0) gold = options[UnityEngine.Random.Range(0, options.Count)];
+            }
+            if (gold != null) yield return DealCard(p, gold);
+
+            for (int i = 0; i < 2; i++)
+            {
+                var card = p.deck.Draw();
+                if (card == null) break;
+                yield return DealCard(p, card);
+            }
+        }
     }
 
     IEnumerator StartRoutine()
@@ -117,6 +188,7 @@ public class GameManager : MonoBehaviour
                 yield return DealCard(p, card);
             }
 
+        yield return EnsureHands();
         StartCoroutine(BeginRound());
     }
 
@@ -267,7 +339,11 @@ public class GameManager : MonoBehaviour
             }
         }
 
-        if (BossHealth <= 0) { SetPhase(GamePhase.Won); yield break; }
+        if (BossHealth <= 0)
+        {
+            StartCoroutine(NextBossRoutine());
+            yield break;
+        }
         StartCoroutine(BossAttackRoutine());
     }
 
@@ -333,16 +409,17 @@ public class GameManager : MonoBehaviour
 
         if (!players.Exists(p => p.IsAlive)) { SetPhase(GamePhase.Lost); yield break; }
 
+        yield return EnsureHands();
         StartCoroutine(BeginRound());
     }
 
     BossAttack PickBossAttack()
     {
-        var list = boss.attacks;
+        var list = Boss.attacks;
         if (list.Count == 0) return null;
 
         int next;
-        if (boss.fixedOrder)
+        if (Boss.fixedOrder)
         {
             next = (lastBossAttack + 1) % list.Count;
         }
