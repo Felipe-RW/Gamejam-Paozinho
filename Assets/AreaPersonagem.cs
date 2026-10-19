@@ -1,11 +1,11 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class TelaSelecao : MonoBehaviour
+public class AreaPersonagem : MonoBehaviour
 {
     public Slot[] slots;
     public Button botaoJogar;
-    public int minimoJogadores = 2;
+    public int minimoJogadores = 1;
 
     private void Update()
     {

@@ -21,7 +21,11 @@ MonoBehaviour:
     instantiationMode: 0
   - dependency: {fileID: 2800000, guid: 3028dc075ba8c584d9bc7d1e0255e038, type: 3}
     instantiationMode: 1
+  - dependency: {fileID: 2800000, guid: 0918d297b27bb7149935a30fa588542d, type: 3}
+    instantiationMode: 0
   - dependency: {fileID: 2800000, guid: 2d039a9c1ca7b424e82f4ec32fd98cf4, type: 3}
+    instantiationMode: 0
+  - dependency: {fileID: 2800000, guid: 4609649ee03b16d49bc2aadaa63e43b3, type: 3}
     instantiationMode: 0
   - dependency: {fileID: 2800000, guid: ee148e281f3c41c5b4ff5f8a5afe5a6c, type: 3}
     instantiationMode: 1
@@ -29,10 +33,16 @@ MonoBehaviour:
     instantiationMode: 1
   - dependency: {fileID: 11400000, guid: 2e498d1c8094910479dc3e1b768306a4, type: 2}
     instantiationMode: 1
+  - dependency: {fileID: 2800000, guid: 9d0f176251edb084da9f1526be9ba827, type: 3}
+    instantiationMode: 0
   - dependency: {fileID: -944628639613478452, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
     instantiationMode: 1
   - dependency: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
     instantiationMode: 1
+  - dependency: {fileID: 2800000, guid: 3a48443476d5b8b43965a9906e7d7373, type: 3}
+    instantiationMode: 0
+  - dependency: {fileID: 2800000, guid: 3bf98348eccd4af43836d92f12e306d6, type: 3}
+    instantiationMode: 0
   - dependency: {fileID: 12800000, guid: e3265ab4bf004d28a9537516768c1c75, type: 3}
     instantiationMode: 1
   templatePipeline: {fileID: 0}

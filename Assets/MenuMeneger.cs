@@ -15,6 +15,7 @@ public class MenuMeneger : MonoBehaviour
         popupplayers.SetActive(true);
     }
 
+
     public void FecharJogar()
     {
         popupplayers.SetActive(false);
