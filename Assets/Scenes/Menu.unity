@@ -3339,7 +3339,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.91200006, y: 0.79200006}
   m_AnchorMax: {x: 0.9284792, y: 0.81700003}
-  m_AnchoredPosition: {x: 0.7000122, y: 1.2000122}
+  m_AnchoredPosition: {x: 0.6999512, y: 1.1999512}
   m_SizeDelta: {x: 3.1958008, y: 3}
   m_Pivot: {x: 1, y: 1}
 --- !u!114 &549202727
@@ -8961,7 +8961,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.45879167, y: 0.049518522}
   m_AnchorMax: {x: 0.5375625, y: 0.107518524}
-  m_AnchoredPosition: {x: 3.5, y: -7.500061}
+  m_AnchoredPosition: {x: 3.5, y: -7.500244}
   m_SizeDelta: {x: 9, y: -33}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1810213364
@@ -9768,7 +9768,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1396373252182968515, guid: 8281ab24c37024b4587b3edcfa877bfd, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1511213717603455619, guid: 8281ab24c37024b4587b3edcfa877bfd, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target

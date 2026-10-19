@@ -720,7 +720,7 @@ MonoBehaviour:
     - line: '|   cloudProjectId: b3b9d865-72f8-4b53-9be2-17ff86e9a0fe'
     - line: '|   framebufferDepthMemorylessMode: 0'
     - line: '|   qualitySettingsNames: []'
-    - line: '|   projectName: My project'
+    - line: '|   projectName: Gamejam-Paozinho'
     - line: '|   organizationId: felipewrubel'
     - line: '|   cloudEnabled: 0'
     - line: '|   legacyClampBlendShapeWeights: 0'
