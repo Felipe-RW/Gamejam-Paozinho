@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dd7cd583a665af549a0e43c870432908, type: 3}
   m_Name: Boss 1
   m_EditorClassIdentifier: Assembly-CSharp::BossData
-  displayName: "Drag\xE3o de Bronze"
-  sprite: {fileID: 5214463068896568337, guid: 0dc6f3124687c5147b4f4ce6364f3461, type: 3}
+  displayName: "Drag\xE3o"
+  sprite: {fileID: 3428391033546482049, guid: 4024714c142976545af0117d07ce17f8, type: 3}
   healthByPlayerCount: 50000000640000008c000000b4000000i
   startingArmor: 0
   attacks:
@@ -24,6 +24,10 @@ MonoBehaviour:
     gainBlock: 0
     gainThorns: 0
     gainArmor: 0
+    bulletPrefab: {fileID: -2253911629886400664, guid: b1f3ce382f3498442acaf48c341b22fa, type: 3}
+    hitEffectPrefab: {fileID: 8757852324052259867, guid: e3d6ce5ef7c363d4eaa2fcb1a1932d17, type: 3}
+    hitEffectSeconds: 1.5
+    hitEffectScale: 1
   - attackName: Morder
     icon: {fileID: -3374298318667208731, guid: a11b9a243de8d8444927f9a930a25b69, type: 3}
     damage: 16
@@ -31,6 +35,10 @@ MonoBehaviour:
     gainBlock: 6
     gainThorns: 0
     gainArmor: 0
+    bulletPrefab: {fileID: 0}
+    hitEffectPrefab: {fileID: 0}
+    hitEffectSeconds: 1.5
+    hitEffectScale: 1
   - attackName: Rejuvenescer
     icon: {fileID: 3694609330789066741, guid: c957c5e7e6fd67f4aad7ca7865eedd64, type: 3}
     damage: 0
@@ -38,4 +46,8 @@ MonoBehaviour:
     gainBlock: 16
     gainThorns: 0
     gainArmor: 2
+    bulletPrefab: {fileID: 0}
+    hitEffectPrefab: {fileID: 0}
+    hitEffectSeconds: 1.5
+    hitEffectScale: 1
   fixedOrder: 0

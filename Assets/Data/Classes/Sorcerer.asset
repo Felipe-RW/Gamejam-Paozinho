@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Sorcerer
   m_EditorClassIdentifier: Assembly-CSharp::ClassData
   playerClass: 3
-  displayName: Feiticeiro
+  displayName: Bardo
   suit: 3
   maxHealth: 35
   portrait: {fileID: -713130514836291391, guid: c212c6b1e2ba95d4a9404b95b8b2b10b, type: 3}
