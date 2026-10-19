@@ -97,13 +97,14 @@ public class BattleEffects : MonoBehaviour
         FadeOverlay(darkAlpha);
         Play(attack, battleUI.BossAnchor, 0f);
 
-        if (bulletPrefab == null) return;
+        var bullet = move.bulletPrefab != null ? move.bulletPrefab : bulletPrefab;
+        if (bullet == null) return;
         foreach (var player in gm.Players)
         {
             if (!player.IsAlive) continue;
             var target = battleUI.GetPlayerAnchor(player);
             if (target != null && battleUI.BossAnchor != null)
-                StartCoroutine(FlyBullet(battleUI.BossAnchor, target));
+                StartCoroutine(FlyBullet(bullet, battleUI.BossAnchor, target));
         }
     }
 
@@ -124,6 +125,20 @@ public class BattleEffects : MonoBehaviour
 
     void OnPlayerDamaged(PlayerState player, int amount)
     {
+        var move = gm.CurrentBossAttack;
+        if (gm.Phase == GamePhase.BossTurn && move != null && move.hitEffectPrefab != null)
+        {
+            var custom = new Effect
+            {
+                prefab = move.hitEffectPrefab,
+                lifetime = move.hitEffectSeconds,
+                scale = move.hitEffectScale,
+                fitToTarget = true
+            };
+            Play(custom, battleUI.GetPlayerAnchor(player), 0f);
+            return;
+        }
+
         Play(damage, battleUI.GetPlayerAnchor(player), 0f);
     }
 
@@ -177,9 +192,9 @@ public class BattleEffects : MonoBehaviour
         canvas.sortingOrder = sortingOrder;
     }
 
-    IEnumerator FlyBullet(RectTransform from, RectTransform to)
+    IEnumerator FlyBullet(GameObject prefab, RectTransform from, RectTransform to)
     {
-        var bullet = Instantiate(bulletPrefab, RootFor(from));
+        var bullet = Instantiate(prefab, RootFor(from));
         PutOnTop(bullet);
 
         Vector3 a = from.TransformPoint(from.rect.center);

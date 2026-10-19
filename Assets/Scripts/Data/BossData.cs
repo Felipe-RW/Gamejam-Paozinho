@@ -17,6 +17,12 @@ public class BossAttack
     public int gainThorns;
     public int gainArmor;
 
+    [Header("Efeitos visuais proprios (opcional)")]
+    public GameObject bulletPrefab;
+    public GameObject hitEffectPrefab;
+    public float hitEffectSeconds = 1.5f;
+    public float hitEffectScale = 1f;
+
     public string Describe()
     {
         var parts = new System.Collections.Generic.List<string>();
