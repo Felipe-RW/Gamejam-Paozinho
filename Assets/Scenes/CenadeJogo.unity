@@ -3210,6 +3210,7 @@ MonoBehaviour:
   extraObjects: []
   cardPrefab: {fileID: 6315835635617279120, guid: 3873b3921908fbe488c6a1d27012e5b7, type: 3}
   cardBack: {fileID: -8246103488371625927, guid: 5e5adf1ac51997f4c902cfd96beebba3, type: 3}
+  effectArea: {fileID: 0}
 --- !u!1 &311644745
 GameObject:
   m_ObjectHideFlags: 0
@@ -5693,6 +5694,7 @@ MonoBehaviour:
   extraObjects: []
   cardPrefab: {fileID: 6315835635617279120, guid: 3873b3921908fbe488c6a1d27012e5b7, type: 3}
   cardBack: {fileID: -8246103488371625927, guid: 5e5adf1ac51997f4c902cfd96beebba3, type: 3}
+  effectArea: {fileID: 0}
 --- !u!224 &533442544
 RectTransform:
   m_ObjectHideFlags: 0
@@ -6865,8 +6867,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4281479730
-  m_fontColor: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
+    rgba: 4294967295
+  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -9882,6 +9884,7 @@ MonoBehaviour:
   extraObjects: []
   cardPrefab: {fileID: 6315835635617279120, guid: 3873b3921908fbe488c6a1d27012e5b7, type: 3}
   cardBack: {fileID: -8246103488371625927, guid: 5e5adf1ac51997f4c902cfd96beebba3, type: 3}
+  effectArea: {fileID: 0}
 --- !u!224 &879858578
 RectTransform:
   m_ObjectHideFlags: 0
@@ -11001,6 +11004,7 @@ MonoBehaviour:
   extraObjects: []
   cardPrefab: {fileID: 6315835635617279120, guid: 3873b3921908fbe488c6a1d27012e5b7, type: 3}
   cardBack: {fileID: -8246103488371625927, guid: 5e5adf1ac51997f4c902cfd96beebba3, type: 3}
+  effectArea: {fileID: 0}
 --- !u!224 &977961300
 RectTransform:
   m_ObjectHideFlags: 0
@@ -11086,6 +11090,7 @@ MonoBehaviour:
   extraObjects: []
   cardPrefab: {fileID: 6315835635617279120, guid: 3873b3921908fbe488c6a1d27012e5b7, type: 3}
   cardBack: {fileID: -8246103488371625927, guid: 5e5adf1ac51997f4c902cfd96beebba3, type: 3}
+  effectArea: {fileID: 0}
 --- !u!1 &991613435
 GameObject:
   m_ObjectHideFlags: 0
@@ -12697,6 +12702,7 @@ MonoBehaviour:
   extraObjects: []
   cardPrefab: {fileID: 6315835635617279120, guid: 3873b3921908fbe488c6a1d27012e5b7, type: 3}
   cardBack: {fileID: -8246103488371625927, guid: 5e5adf1ac51997f4c902cfd96beebba3, type: 3}
+  effectArea: {fileID: 0}
 --- !u!224 &1130465090
 RectTransform:
   m_ObjectHideFlags: 0
@@ -13995,7 +14001,7 @@ MonoBehaviour:
     m_SelectOnDown: {fileID: 0}
     m_SelectOnLeft: {fileID: 0}
     m_SelectOnRight: {fileID: 0}
-  m_Transition: 1
+  m_Transition: 2
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
     m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
@@ -14005,7 +14011,7 @@ MonoBehaviour:
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
   m_SpriteState:
-    m_HighlightedSprite: {fileID: 0}
+    m_HighlightedSprite: {fileID: -2745738059987950808, guid: be3fe5a4d7cab4143b6e74773d5c9063, type: 3}
     m_PressedSprite: {fileID: 0}
     m_SelectedSprite: {fileID: 0}
     m_DisabledSprite: {fileID: 0}
@@ -14040,8 +14046,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
-  m_Type: 1
+  m_Sprite: {fileID: -7121429823671655361, guid: 05b872c79a7628c419f44709cc696141, type: 3}
+  m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -14184,7 +14190,7 @@ MonoBehaviour:
   m_fontColor32:
     serializedVersion: 2
     rgba: 4281479730
-  m_fontColor: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
+  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -15407,6 +15413,7 @@ MonoBehaviour:
   extraObjects: []
   cardPrefab: {fileID: 6315835635617279120, guid: 3873b3921908fbe488c6a1d27012e5b7, type: 3}
   cardBack: {fileID: -8246103488371625927, guid: 5e5adf1ac51997f4c902cfd96beebba3, type: 3}
+  effectArea: {fileID: 0}
 --- !u!224 &1343326082
 RectTransform:
   m_ObjectHideFlags: 0
@@ -15470,6 +15477,7 @@ MonoBehaviour:
   extraObjects: []
   cardPrefab: {fileID: 6315835635617279120, guid: 3873b3921908fbe488c6a1d27012e5b7, type: 3}
   cardBack: {fileID: -8246103488371625927, guid: 5e5adf1ac51997f4c902cfd96beebba3, type: 3}
+  effectArea: {fileID: 0}
 --- !u!224 &1343778526
 RectTransform:
   m_ObjectHideFlags: 0
@@ -16107,6 +16115,7 @@ MonoBehaviour:
   extraObjects: []
   cardPrefab: {fileID: 6315835635617279120, guid: 3873b3921908fbe488c6a1d27012e5b7, type: 3}
   cardBack: {fileID: -8246103488371625927, guid: 5e5adf1ac51997f4c902cfd96beebba3, type: 3}
+  effectArea: {fileID: 0}
 --- !u!224 &1377911252
 RectTransform:
   m_ObjectHideFlags: 0
@@ -17394,7 +17403,7 @@ MonoBehaviour:
     m_SelectOnDown: {fileID: 0}
     m_SelectOnLeft: {fileID: 0}
     m_SelectOnRight: {fileID: 0}
-  m_Transition: 1
+  m_Transition: 2
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
     m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
@@ -17404,7 +17413,7 @@ MonoBehaviour:
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
   m_SpriteState:
-    m_HighlightedSprite: {fileID: 0}
+    m_HighlightedSprite: {fileID: -2745738059987950808, guid: be3fe5a4d7cab4143b6e74773d5c9063, type: 3}
     m_PressedSprite: {fileID: 0}
     m_SelectedSprite: {fileID: 0}
     m_DisabledSprite: {fileID: 0}
@@ -17439,8 +17448,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
-  m_Type: 1
+  m_Sprite: {fileID: -7121429823671655361, guid: 05b872c79a7628c419f44709cc696141, type: 3}
+  m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -17615,6 +17624,7 @@ MonoBehaviour:
   extraObjects: []
   cardPrefab: {fileID: 6315835635617279120, guid: 3873b3921908fbe488c6a1d27012e5b7, type: 3}
   cardBack: {fileID: -8246103488371625927, guid: 5e5adf1ac51997f4c902cfd96beebba3, type: 3}
+  effectArea: {fileID: 0}
 --- !u!1 &1482041222
 GameObject:
   m_ObjectHideFlags: 0
@@ -17678,6 +17688,7 @@ MonoBehaviour:
   extraObjects: []
   cardPrefab: {fileID: 6315835635617279120, guid: 3873b3921908fbe488c6a1d27012e5b7, type: 3}
   cardBack: {fileID: -8246103488371625927, guid: 5e5adf1ac51997f4c902cfd96beebba3, type: 3}
+  effectArea: {fileID: 0}
 --- !u!1 &1488368044
 GameObject:
   m_ObjectHideFlags: 0
@@ -18933,7 +18944,7 @@ MonoBehaviour:
   m_fontColor32:
     serializedVersion: 2
     rgba: 4281479730
-  m_fontColor: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
+  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -19066,6 +19077,7 @@ MonoBehaviour:
   extraObjects: []
   cardPrefab: {fileID: 6315835635617279120, guid: 3873b3921908fbe488c6a1d27012e5b7, type: 3}
   cardBack: {fileID: -8246103488371625927, guid: 5e5adf1ac51997f4c902cfd96beebba3, type: 3}
+  effectArea: {fileID: 0}
 --- !u!1 &1568735086
 GameObject:
   m_ObjectHideFlags: 0
@@ -19658,6 +19670,7 @@ MonoBehaviour:
   extraObjects: []
   cardPrefab: {fileID: 6315835635617279120, guid: 3873b3921908fbe488c6a1d27012e5b7, type: 3}
   cardBack: {fileID: -8246103488371625927, guid: 5e5adf1ac51997f4c902cfd96beebba3, type: 3}
+  effectArea: {fileID: 0}
 --- !u!1 &1619209578
 GameObject:
   m_ObjectHideFlags: 0
@@ -20504,6 +20517,7 @@ MonoBehaviour:
   extraObjects: []
   cardPrefab: {fileID: 6315835635617279120, guid: 3873b3921908fbe488c6a1d27012e5b7, type: 3}
   cardBack: {fileID: -8246103488371625927, guid: 5e5adf1ac51997f4c902cfd96beebba3, type: 3}
+  effectArea: {fileID: 0}
 --- !u!224 &1693558425
 RectTransform:
   m_ObjectHideFlags: 0
@@ -20740,6 +20754,7 @@ MonoBehaviour:
   extraObjects: []
   cardPrefab: {fileID: 6315835635617279120, guid: 3873b3921908fbe488c6a1d27012e5b7, type: 3}
   cardBack: {fileID: -8246103488371625927, guid: 5e5adf1ac51997f4c902cfd96beebba3, type: 3}
+  effectArea: {fileID: 0}
 --- !u!224 &1726343406
 RectTransform:
   m_ObjectHideFlags: 0
@@ -22901,7 +22916,7 @@ MonoBehaviour:
     m_SelectOnDown: {fileID: 0}
     m_SelectOnLeft: {fileID: 0}
     m_SelectOnRight: {fileID: 0}
-  m_Transition: 1
+  m_Transition: 2
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
     m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
@@ -22911,7 +22926,7 @@ MonoBehaviour:
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
   m_SpriteState:
-    m_HighlightedSprite: {fileID: 0}
+    m_HighlightedSprite: {fileID: -2745738059987950808, guid: be3fe5a4d7cab4143b6e74773d5c9063, type: 3}
     m_PressedSprite: {fileID: 0}
     m_SelectedSprite: {fileID: 0}
     m_DisabledSprite: {fileID: 0}
@@ -22946,8 +22961,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
-  m_Type: 1
+  m_Sprite: {fileID: -7121429823671655361, guid: 05b872c79a7628c419f44709cc696141, type: 3}
+  m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -23159,7 +23174,7 @@ MonoBehaviour:
     m_SelectOnDown: {fileID: 0}
     m_SelectOnLeft: {fileID: 0}
     m_SelectOnRight: {fileID: 0}
-  m_Transition: 1
+  m_Transition: 2
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
     m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
@@ -23169,7 +23184,7 @@ MonoBehaviour:
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
   m_SpriteState:
-    m_HighlightedSprite: {fileID: 0}
+    m_HighlightedSprite: {fileID: -2745738059987950808, guid: be3fe5a4d7cab4143b6e74773d5c9063, type: 3}
     m_PressedSprite: {fileID: 0}
     m_SelectedSprite: {fileID: 0}
     m_DisabledSprite: {fileID: 0}
@@ -23204,8 +23219,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
-  m_Type: 1
+  m_Sprite: {fileID: -7121429823671655361, guid: 05b872c79a7628c419f44709cc696141, type: 3}
+  m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -23841,6 +23856,7 @@ MonoBehaviour:
   extraObjects: []
   cardPrefab: {fileID: 6315835635617279120, guid: 3873b3921908fbe488c6a1d27012e5b7, type: 3}
   cardBack: {fileID: -8246103488371625927, guid: 5e5adf1ac51997f4c902cfd96beebba3, type: 3}
+  effectArea: {fileID: 0}
 --- !u!1 &1988584772
 GameObject:
   m_ObjectHideFlags: 0
@@ -25935,7 +25951,7 @@ MonoBehaviour:
   m_fontColor32:
     serializedVersion: 2
     rgba: 4281479730
-  m_fontColor: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
+  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
