@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -39,6 +40,11 @@ public class PlayerPanelView : MonoBehaviour
             slots[i] = slot;
         }
     }
+
+    public IReadOnlyList<CardView> HandViews => handViews;
+
+    public RectTransform GetSlotRect(int index) =>
+        index >= 0 && index < slots.Length ? (RectTransform)slots[index].transform : null;
 
     public void SetVisible(bool visible)
     {

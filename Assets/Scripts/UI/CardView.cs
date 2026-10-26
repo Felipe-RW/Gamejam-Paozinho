@@ -11,6 +11,7 @@ public class CardView : MonoBehaviour, IPointerClickHandler
 
     Image image;
     Vector3 baseScale;
+    bool selected, focused;
 
     void Awake()
     {
@@ -32,9 +33,21 @@ public class CardView : MonoBehaviour, IPointerClickHandler
         image.raycastTarget = false;
     }
 
-    public void SetSelected(bool selected)
+    public void SetSelected(bool value)
     {
-        transform.localScale = selected ? baseScale * 1.15f : baseScale;
+        selected = value;
+        ApplyScale();
+    }
+
+    public void SetFocused(bool value)
+    {
+        focused = value;
+        ApplyScale();
+    }
+
+    void ApplyScale()
+    {
+        transform.localScale = selected || focused ? baseScale * 1.15f : baseScale;
     }
 
     public void OnPointerClick(PointerEventData eventData) => Clicked?.Invoke(this);

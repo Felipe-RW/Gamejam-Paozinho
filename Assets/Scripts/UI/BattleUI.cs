@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class BattleUI : MonoBehaviour
@@ -32,7 +33,31 @@ public class BattleUI : MonoBehaviour
 
     CardData selected;
     readonly List<int> seatOfPlayer = new();
+    readonly List<int> deviceOfPlayer = new();
     Coroutine spinning;
+
+    public CardData Selected => selected;
+    public IReadOnlyList<int> PlayerDevices => deviceOfPlayer;
+    public Button EndTurnButton => endTurnButton;
+
+    // Dispositivo dono do jogador da vez (None = sem restricao, ex.: teste no editor).
+    public int CurrentDevice
+    {
+        get
+        {
+            var players = gameManager.Players;
+            if (players.Count == 0) return PlayerInputs.None;
+            for (int i = 0; i < players.Count && i < deviceOfPlayer.Count; i++)
+                if (players[i] == gameManager.CurrentPlayer) return deviceOfPlayer[i];
+            return PlayerInputs.None;
+        }
+    }
+
+    bool MouseAllowed()
+    {
+        int dev = CurrentDevice;
+        return dev == PlayerInputs.None || dev == PlayerInputs.KeyboardMouse;
+    }
 
     void OnEnable()
     {
@@ -54,28 +79,31 @@ public class BattleUI : MonoBehaviour
         for (int i = 0; i < panels.Length; i++)
         {
             int seat = i;
-            panels[i].HandCardClicked += OnHandCardClicked;
-            panels[i].SlotClicked += slot => OnSlotClicked(seat, slot);
+            panels[i].HandCardClicked += view => { if (MouseAllowed()) ActivateHandCard(view.Data); };
+            panels[i].SlotClicked += slot => { if (MouseAllowed()) ActivateSlot(seatOfPlayer.IndexOf(seat), slot); };
         }
 
-        endTurnButton.onClick.AddListener(() =>
-        {
-            selected = null;
-            gameManager.EndTurn();
-        });
+        endTurnButton.onClick.AddListener(() => { if (MouseAllowed()) EndTurnPressed(); });
+
+        // Navegacao do EventSystem faria o controle "clicar" no ultimo botao do mouse.
+        if (EventSystem.current != null) EventSystem.current.sendNavigationEvents = false;
+        gameObject.AddComponent<BattleFocus>().Init(this, gameManager);
 
         if (!startOnPlay) return;
 
-        var source = GameSession.HasSelection ? GameSession.SeatClasses : seatClasses;
+        bool fromMenu = GameSession.HasSelection;
+        var source = fromMenu ? GameSession.SeatClasses : seatClasses;
         GameSession.HasSelection = false;
 
         var chosen = new List<ClassData>();
         seatOfPlayer.Clear();
+        deviceOfPlayer.Clear();
         for (int seat = 0; seat < source.Length && chosen.Count < panels.Length; seat++)
         {
             if (source[seat] == null) continue;
             chosen.Add(source[seat]);
             seatOfPlayer.Add(chosen.Count - 1);
+            deviceOfPlayer.Add(fromMenu ? GameSession.SeatDevices[seat] : PlayerInputs.None);
         }
         if (layoutPresets != null) layoutPresets.Apply(chosen.Count);
         gameManager.StartGame(chosen);
@@ -140,15 +168,26 @@ public class BattleUI : MonoBehaviour
         if (bossMoveText != null) bossMoveText.text = move.Describe();
     }
 
-    void OnHandCardClicked(CardView view)
+    public void ActivateHandCard(CardData card)
     {
-        selected = selected == view.Data ? null : view.Data;
+        selected = selected == card ? null : card;
         Refresh();
     }
 
-    void OnSlotClicked(int seat, int slotIndex)
+    public void ClearSelection()
     {
-        int playerIndex = seatOfPlayer.IndexOf(seat);
+        selected = null;
+        Refresh();
+    }
+
+    public void EndTurnPressed()
+    {
+        selected = null;
+        gameManager.EndTurn();
+    }
+
+    public void ActivateSlot(int playerIndex, int slotIndex)
+    {
         if (playerIndex < 0) return;
 
         if (gameManager.Players[playerIndex].slots[slotIndex] != null)

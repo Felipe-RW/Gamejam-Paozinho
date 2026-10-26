@@ -7736,6 +7736,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 8d455eb4073e4b244be09ae3095267d0, type: 2}
   - {fileID: 11400000, guid: 4d70cf1f92542fa42a94d0a8aad70604, type: 2}
   startButton: {fileID: 1810213364}
+  closeButton: {fileID: 549202727}
   battleScene: CenadeJogo
 --- !u!1 &1570708009
 GameObject:
@@ -9768,7 +9769,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1396373252182968515, guid: 8281ab24c37024b4587b3edcfa877bfd, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1511213717603455619, guid: 8281ab24c37024b4587b3edcfa877bfd, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
