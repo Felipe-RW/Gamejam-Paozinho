@@ -1,0 +1,84 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 13966, guid: 0000000000000000e000000000000000, type: 0}
+  m_Name: Menu
+  m_EditorClassIdentifier: UnityEditor.dll::UnityEditor.SceneTemplate.SceneTemplateAsset
+  templateScene: {fileID: 102900000, guid: 361224550c1702046bc62978ce16402e, type: 3}
+  templateName: 
+  description: 
+  preview: {fileID: 0}
+  dependencies:
+  - dependency: {fileID: 2800000, guid: acb0bacfcf523b94ca741af3aedeea28, type: 3}
+    instantiationMode: 0
+  - dependency: {fileID: 12800000, guid: 8af6bc8855ff8e34aa5f018aae50dd0e, type: 3}
+    instantiationMode: 1
+  - dependency: {fileID: 11400000, guid: df8945feced0abb4a8b162af8a530c7d, type: 2}
+    instantiationMode: 1
+  - dependency: {fileID: 2800000, guid: 3028dc075ba8c584d9bc7d1e0255e038, type: 3}
+    instantiationMode: 1
+  - dependency: {fileID: 2800000, guid: 2f6508bd7d6602b4f97911e09562cb88, type: 3}
+    instantiationMode: 0
+  - dependency: {fileID: 2800000, guid: 05b872c79a7628c419f44709cc696141, type: 3}
+    instantiationMode: 0
+  - dependency: {fileID: 2800000, guid: 87c60e09362cdf74d8d3e6e496992fde, type: 3}
+    instantiationMode: 0
+  - dependency: {fileID: 2800000, guid: 2d039a9c1ca7b424e82f4ec32fd98cf4, type: 3}
+    instantiationMode: 0
+  - dependency: {fileID: 11400000, guid: 48f1c521efd4a6e4fa615914e7c29e64, type: 2}
+    instantiationMode: 1
+  - dependency: {fileID: 2800000, guid: 2fd6421f253b4ef1a19526541f9ffc0c, type: 3}
+    instantiationMode: 1
+  - dependency: {fileID: 2800000, guid: 986113c30160b7a40812d048165ebbea, type: 3}
+    instantiationMode: 0
+  - dependency: {fileID: 11400000, guid: 2e498d1c8094910479dc3e1b768306a4, type: 2}
+    instantiationMode: 1
+  - dependency: {fileID: 8300000, guid: 53abd07c3dc1b8647964504ec0c4fdef, type: 3}
+    instantiationMode: 1
+  - dependency: {fileID: 2800000, guid: c8348098f1aa4594788cc7fd0bf75d36, type: 3}
+    instantiationMode: 0
+  - dependency: {fileID: 2800000, guid: 06b5d7c29ed9a8447aab9a311a6a4542, type: 3}
+    instantiationMode: 0
+  - dependency: {fileID: 11400000, guid: 57e526eecf88e684db5ae388d3d57321, type: 2}
+    instantiationMode: 1
+  - dependency: {fileID: 2800000, guid: 6aa01caef7fc66c49a1e0af84b2c2ee1, type: 3}
+    instantiationMode: 0
+  - dependency: {fileID: 2800000, guid: dab87a1d22f333c4c80eeac1f7c73adc, type: 3}
+    instantiationMode: 0
+  - dependency: {fileID: 11400000, guid: 4d70cf1f92542fa42a94d0a8aad70604, type: 2}
+    instantiationMode: 1
+  - dependency: {fileID: 2800000, guid: 9f9e9eaf8819c5d409a5e7e64701468c, type: 3}
+    instantiationMode: 0
+  - dependency: {fileID: 2800000, guid: c212c6b1e2ba95d4a9404b95b8b2b10b, type: 3}
+    instantiationMode: 0
+  - dependency: {fileID: 2800000, guid: 961172a7a7c6b5040804297651bf5d21, type: 3}
+    instantiationMode: 0
+  - dependency: {fileID: 2800000, guid: 1dc112f69f1b7ab418f1d2c81b902221, type: 3}
+    instantiationMode: 0
+  - dependency: {fileID: 2800000, guid: ee148e281f3c41c5b4ff5f8a5afe5a6c, type: 3}
+    instantiationMode: 1
+  - dependency: {fileID: -944628639613478452, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
+    instantiationMode: 1
+  - dependency: {fileID: 2800000, guid: 383979c8fb286d54ea54287e54805f99, type: 3}
+    instantiationMode: 0
+  - dependency: {fileID: 1396373252182968515, guid: 8281ab24c37024b4587b3edcfa877bfd, type: 3}
+    instantiationMode: 0
+  - dependency: {fileID: 11400000, guid: 8d455eb4073e4b244be09ae3095267d0, type: 2}
+    instantiationMode: 1
+  - dependency: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+    instantiationMode: 1
+  - dependency: {fileID: 2800000, guid: f7e1fa27c660292428e06cb5e19807d4, type: 3}
+    instantiationMode: 0
+  - dependency: {fileID: 12800000, guid: e3265ab4bf004d28a9537516768c1c75, type: 3}
+    instantiationMode: 1
+  templatePipeline: {fileID: 0}
+  badge: {fileID: 0}
+  addToDefaults: 0

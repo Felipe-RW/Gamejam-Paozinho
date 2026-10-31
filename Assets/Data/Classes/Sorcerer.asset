@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 38fa170997f434c4b871e49e104c2714, type: 3}
+  m_Name: Sorcerer
+  m_EditorClassIdentifier: Assembly-CSharp::ClassData
+  playerClass: 3
+  displayName: Bardo
+  suit: 3
+  maxHealth: 35
+  portrait: {fileID: -713130514836291391, guid: c212c6b1e2ba95d4a9404b95b8b2b10b, type: 3}
+  suitSprite: {fileID: -366921878990213715, guid: 986113c30160b7a40812d048165ebbea, type: 3}

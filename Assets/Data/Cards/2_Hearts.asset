@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 049e83688814e504c9d014cdc9f81a72, type: 3}
+  m_Name: 2_Hearts
+  m_EditorClassIdentifier: Assembly-CSharp::CardData
+  suit: 2
+  value: 2
+  sprite: {fileID: 3886954106644893304, guid: 8e4279cd0dfab4945b161799cd7ab6ad, type: 3}

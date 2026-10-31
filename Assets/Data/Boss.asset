@@ -1,0 +1,44 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dd7cd583a665af549a0e43c870432908, type: 3}
+  m_Name: Boss
+  m_EditorClassIdentifier: Assembly-CSharp::BossData
+  displayName: Valete de Paus
+  sprite: {fileID: 3595712252220336186, guid: 1839460d5d3cbcd41a33c26c248172c0, type: 3}
+  healthByPlayerCount: 3c0000005000000078000000a0000000i
+  startingArmor: 4
+  attacks:
+  - attackName: Ataque Forte
+    icon: {fileID: 8320824912735345967, guid: cefc70f59d33549449c2bfcb0ae8c619, type: 3}
+    fx: 0
+    damage: 10
+    hits: 1
+    gainBlock: 0
+    gainThorns: 0
+    gainArmor: 0
+  - attackName: Golpe de Escudo
+    icon: {fileID: -3374298318667208731, guid: a11b9a243de8d8444927f9a930a25b69, type: 3}
+    fx: 0
+    damage: 7
+    hits: 1
+    gainBlock: 5
+    gainThorns: 0
+    gainArmor: 0
+  - attackName: Escudo com Espinhos
+    icon: {fileID: 3694609330789066741, guid: c957c5e7e6fd67f4aad7ca7865eedd64, type: 3}
+    fx: 0
+    damage: 1
+    hits: 1
+    gainBlock: 0
+    gainThorns: 1
+    gainArmor: 0
+  fixedOrder: 0

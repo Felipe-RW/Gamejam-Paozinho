@@ -1,0 +1,26 @@
+{
+    "name": "TeaserRecorder.Editor",
+    "rootNamespace": "",
+    "references": [
+        "Unity.Recorder",
+        "Unity.Recorder.Base",
+        "Unity.Recorder.Editor"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": false,
+    "defineConstraints": [],
+    "versionDefines": [
+        {
+            "name": "com.unity.recorder",
+            "expression": "5.0.0",
+            "define": "TEASER_RECORDER"
+        }
+    ],
+    "noEngineReferences": false
+}
