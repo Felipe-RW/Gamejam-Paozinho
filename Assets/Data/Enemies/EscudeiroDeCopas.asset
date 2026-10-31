@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: EscudeiroDeCopas
   m_EditorClassIdentifier: Assembly-CSharp::BossData
   displayName: Escudeiro de Copas
-  sprite: {fileID: 8875227137565277807, guid: 453aea05e510e8f438c12d55780edf4a, type: 3}
-  healthByPlayerCount: 01000000180000002000000028000000i
+  sprite: {fileID: 1735802508270244415, guid: 8259561431cf5cd4685a1339d32626cf, type: 3}
+  healthByPlayerCount: 12000000180000002000000028000000i
   startingArmor: 1
   attacks:
   - attackName: Escudada

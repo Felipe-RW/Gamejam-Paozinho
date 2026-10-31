@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: MercadorDeOuros
   m_EditorClassIdentifier: Assembly-CSharp::BossData
   displayName: Mercador de Ouros
-  sprite: {fileID: 8297182249285964197, guid: c8377eb573c9098448e6c5307a51a21d, type: 3}
-  healthByPlayerCount: 0100000010000000160000001c000000i
+  sprite: {fileID: -2113957965901467558, guid: b66b800b769271f4e8e0c5ed418666be, type: 3}
+  healthByPlayerCount: 0e00000010000000160000001c000000i
   startingArmor: 0
   attacks:
   - attackName: Moedada

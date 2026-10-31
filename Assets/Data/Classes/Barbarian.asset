@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ClassData
   playerClass: 0
   displayName: "B\xE1rbaro"
-  suit: 0
+  suit: 1
   maxHealth: 40
   portrait: {fileID: -948459698169786797, guid: dab87a1d22f333c4c80eeac1f7c73adc, type: 3}
   suitSprite: {fileID: 973991209122068059, guid: 6aa01caef7fc66c49a1e0af84b2c2ee1, type: 3}
