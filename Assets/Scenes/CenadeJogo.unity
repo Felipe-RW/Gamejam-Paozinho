@@ -6329,16 +6329,8 @@ MonoBehaviour:
   enemyHealthPerLap: 5
   enemyArmorPerLap: 1
   randomWaveEnemies: 1
-  waveBackgrounds:
-  - image: {fileID: -7443756053782179069, guid: a1f82fe9a706ad244804b5111e5a6eec, type: 3}
-    name: Wave01
-  - image: {fileID: -1488717806511990548, guid: c1da41c476469444a9e8df916fca74c1, type: 3}
-    name: Wave02
-  bossBackgrounds:
-  - image: {fileID: 6106961544143094016, guid: 346895752eac5a34d958c1f210b1bc66, type: 3}
-    name: Boss01
-  - image: {fileID: 4260325876415979845, guid: 9568aaeed6621b6489531b76c270210f, type: 3}
-    name: Boss02
+  waveBackgrounds: []
+  bossBackgrounds: []
   reviveHealthFraction: 1
   reviveSeconds: 0.8
   menuPanel: {fileID: 2060124578}

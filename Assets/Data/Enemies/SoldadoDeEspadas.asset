@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: SoldadoDeEspadas
   m_EditorClassIdentifier: Assembly-CSharp::BossData
   displayName: Soldado de Espadas
-  sprite: {fileID: -2881742500523410040, guid: feb2ea8ac2726604daa79c3380693e4f, type: 3}
+  sprite: {fileID: 5863048422255497735, guid: 9f603f061fd7bb84fa180a1d56fe3a36, type: 3}
   healthByPlayerCount: 0100000012000000180000001e000000i
   startingArmor: 0
   attacks:

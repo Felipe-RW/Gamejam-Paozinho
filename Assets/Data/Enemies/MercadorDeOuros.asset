@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: MercadorDeOuros
   m_EditorClassIdentifier: Assembly-CSharp::BossData
   displayName: Mercador de Ouros
-  sprite: {fileID: 8297182249285964197, guid: c8377eb573c9098448e6c5307a51a21d, type: 3}
+  sprite: {fileID: 5664900264458626577, guid: 4d9c3cec377115e41bba1664df0630ed, type: 3}
   healthByPlayerCount: 0100000010000000160000001c000000i
   startingArmor: 0
   attacks:
