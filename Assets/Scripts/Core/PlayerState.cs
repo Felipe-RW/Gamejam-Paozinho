@@ -5,6 +5,8 @@ public class PlayerState
     public readonly Deck deck;
     public readonly CardData[] slots;
     public readonly int[] slotPlayedBy;
+    // Indice do inimigo alvo de cada slot (usado pelas cartas de Espadas).
+    public readonly int[] slotTarget;
 
     public int health;
     public int block;
@@ -19,6 +21,7 @@ public class PlayerState
         health = classData.maxHealth;
         slots = new CardData[slotCount];
         slotPlayedBy = new int[slotCount];
+        slotTarget = new int[slotCount];
     }
 
     public int FreeSlotIndex()
@@ -34,10 +37,12 @@ public class PlayerState
         health = System.Math.Min(classData.maxHealth, health + amount);
     }
 
-    public void TakeDamage(int amount)
+    // Retorna quanto o bloqueio absorveu.
+    public int TakeDamage(int amount)
     {
         int absorbed = System.Math.Min(block, amount);
         block -= absorbed;
         health = System.Math.Max(0, health - (amount - absorbed));
+        return absorbed;
     }
 }

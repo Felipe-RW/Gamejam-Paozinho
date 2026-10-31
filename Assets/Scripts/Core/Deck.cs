@@ -60,4 +60,11 @@ public class Deck
     }
 
     public void Discard(CardData card) => discardPile.Add(card);
+
+    // Coloca a carta no topo: ela sera a proxima comprada (usado pelo teaser para montar a mao).
+    public void PutOnTop(CardData card)
+    {
+        if (!drawPile.Remove(card)) discardPile.Remove(card);
+        drawPile.Add(card);
+    }
 }

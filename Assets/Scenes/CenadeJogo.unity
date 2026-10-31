@@ -1749,6 +1749,7 @@ MonoBehaviour:
   - {fileID: 1343326081}
   - {fileID: 1130465089}
   - {fileID: 1693558424}
+  bossRoot: {fileID: 235541049}
   bossHealthBar: {fileID: 950129095}
   bossHealthText: {fileID: 1994220291}
   bossSprite: {fileID: 66818467}
@@ -1757,6 +1758,11 @@ MonoBehaviour:
   bossArmorText: {fileID: 1939517509}
   bossBlockText: {fileID: 1119687822}
   bossThornsText: {fileID: 324850175}
+  enemyRow: {fileID: 0}
+  enemyRowWidth: 0.6
+  enemyViewSize: {x: 180, y: 260}
+  enemySpacing: 24
+  waveText: {fileID: 0}
   endTurnButton: {fileID: 1931507260}
   startOnPlay: 1
   seatClasses:
@@ -6331,6 +6337,15 @@ MonoBehaviour:
   dealSeconds: 0.25
   bossBulletSeconds: 0.8
   bossHitPause: 0.6
+  enemyTypes:
+  - {fileID: 11400000, guid: 863049ce3d3240c478aee39f0c5254d4, type: 2}
+  - {fileID: 11400000, guid: fd573f738fb7b9943a0463eebfa80263, type: 2}
+  - {fileID: 11400000, guid: 0026974798285e749a4c152eb346771b, type: 2}
+  waveSizes: 0200000003000000i
+  extraEnemiesPerLap: 1
+  maxEnemiesPerWave: 5
+  enemyHealthPerLap: 5
+  enemyArmorPerLap: 1
   menuPanel: {fileID: 2060124578}
   defeatPanel: {fileID: 601324478}
   menuScene: Menu
@@ -9344,6 +9359,7 @@ MonoBehaviour:
   panels:
   - {fileID: 1377911251}
   - {fileID: 977961299}
+  bossRoot: {fileID: 416226772}
   bossHealthBar: {fileID: 1073848030}
   bossHealthText: {fileID: 1960033137}
   bossSprite: {fileID: 542938608}
@@ -9352,6 +9368,11 @@ MonoBehaviour:
   bossArmorText: {fileID: 1359403847}
   bossBlockText: {fileID: 231629298}
   bossThornsText: {fileID: 1452296566}
+  enemyRow: {fileID: 0}
+  enemyRowWidth: 0.6
+  enemyViewSize: {x: 180, y: 260}
+  enemySpacing: 24
+  waveText: {fileID: 0}
   endTurnButton: {fileID: 1465176055}
   startOnPlay: 1
   seatClasses:
@@ -16610,6 +16631,7 @@ MonoBehaviour:
   - {fileID: 989329281}
   - {fileID: 1975265867}
   - {fileID: 293432088}
+  bossRoot: {fileID: 1988584772}
   bossHealthBar: {fileID: 171727216}
   bossHealthText: {fileID: 1717469332}
   bossSprite: {fileID: 1041300998}
@@ -16618,6 +16640,11 @@ MonoBehaviour:
   bossArmorText: {fileID: 383589620}
   bossBlockText: {fileID: 1535708922}
   bossThornsText: {fileID: 95135660}
+  enemyRow: {fileID: 0}
+  enemyRowWidth: 0.6
+  enemyViewSize: {x: 180, y: 260}
+  enemySpacing: 24
+  waveText: {fileID: 0}
   endTurnButton: {fileID: 1246271206}
   startOnPlay: 1
   seatClasses:
@@ -17027,6 +17054,7 @@ MonoBehaviour:
   layoutPresets: {fileID: 0}
   panels:
   - {fileID: 1726343405}
+  bossRoot: {fileID: 324545578}
   bossHealthBar: {fileID: 596293324}
   bossHealthText: {fileID: 1678303709}
   bossSprite: {fileID: 1060827752}
@@ -17035,6 +17063,11 @@ MonoBehaviour:
   bossArmorText: {fileID: 392747134}
   bossBlockText: {fileID: 221908863}
   bossThornsText: {fileID: 2084894114}
+  enemyRow: {fileID: 0}
+  enemyRowWidth: 0.6
+  enemyViewSize: {x: 180, y: 260}
+  enemySpacing: 24
+  waveText: {fileID: 0}
   endTurnButton: {fileID: 1940613686}
   startOnPlay: 1
   seatClasses:

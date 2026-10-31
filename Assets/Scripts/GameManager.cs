@@ -19,6 +19,30 @@ public class GameManager : MonoBehaviour
     public float bossBulletSeconds = 0.8f;
     public float bossHitPause = 0.6f;
 
+    [Header("Ondas de inimigos (antes de cada chefe)")]
+    [Tooltip("Tipos de inimigo sorteados nas ondas. Vazio = sem ondas, vai direto ao chefe.")]
+    public List<BossData> enemyTypes = new();
+    [Tooltip("Quantidade de inimigos em cada onda, em ordem. Depois da ultima onda vem o chefe.")]
+    public List<int> waveSizes = new() { 2, 3 };
+    [Tooltip("Inimigos a mais por onda a cada volta completa pelos chefes.")]
+    public int extraEnemiesPerLap = 1;
+    public int maxEnemiesPerWave = 5;
+    public int enemyHealthPerLap = 5;
+    public int enemyArmorPerLap = 1;
+    [Tooltip("Desligado = os inimigos entram na ordem da lista Enemy Types (usado pelo teaser).")]
+    public bool randomWaveEnemies = true;
+
+    // Ganchos opcionais (usados pelo teaser). Nulos = comportamento normal do jogo.
+    // healthOverride: vida fixa para o inimigo/chefe (<= 0 ignora). attackOverride: ataque fixo da rodada (null ignora).
+    public Func<BossData, int> healthOverride;
+    public Func<EnemyState, BossAttack> attackOverride;
+
+    [Header("Jogadores caidos")]
+    [Tooltip("Vida com que o jogador caido volta na proxima onda/chefe (1 = vida cheia, 0.5 = metade).")]
+    [Range(0.05f, 1f)] public float reviveHealthFraction = 1f;
+    [Tooltip("Pausa para o efeito de volta antes da nova rodada.")]
+    public float reviveSeconds = 0.8f;
+
     [Header("Menu")]
     public GameObject menuPanel;
     public GameObject defeatPanel;
@@ -32,15 +56,18 @@ public class GameManager : MonoBehaviour
     public List<CardData> allCards = new();
 
     public GamePhase Phase { get; private set; } = GamePhase.Setup;
-    public int BossHealth { get; private set; }
     public int BossIndex { get; private set; }
     public int Lap { get; private set; }
+    // 0..waveSizes.Count-1 = ondas; waveSizes.Count = chefe.
+    public int WaveIndex { get; private set; }
+    public int WaveCount => waveSizes.Count;
+    public bool IsBossStage => WaveIndex >= waveSizes.Count;
     public BossData Boss => bosses[BossIndex];
-    public int BossMaxHealth => Boss.healthByPlayerCount[Mathf.Clamp(players.Count - 1, 0, Boss.healthByPlayerCount.Length - 1)] + Lap * healthPerLap;
-    public int BossBlock { get; private set; }
-    public int BossThorns { get; private set; }
-    public int BossArmor { get; private set; }
-    public BossAttack CurrentBossAttack { get; private set; }
+    public EnemyState BossEnemy => IsBossStage && enemies.Count > 0 ? enemies[0] : null;
+    public IReadOnlyList<EnemyState> Enemies => enemies;
+    public int AliveEnemyCount => enemies.Count(e => e.IsAlive);
+    // Inimigo atacando agora (durante o turno dos inimigos).
+    public EnemyState AttackingEnemy { get; private set; }
     public IReadOnlyList<PlayerState> Players => players;
     public PlayerState CurrentPlayer => players[currentIndex];
     public int CardsPlayedThisTurn { get; private set; }
@@ -48,21 +75,25 @@ public class GameManager : MonoBehaviour
     public event Action OnStateChanged;
     public event Action<PlayerState, CardData, int> OnCardPlaced;
     public event Action<PlayerState, Suit, int> OnEffectApplied;
-    public event Action<BossAttack> OnBossMoveChosen;
-    public event Action<BossAttack> OnBossAttack;
     public event Action<PlayerState, CardData> OnCardDealStart;
-    public event Action<BossData> OnBossDefeated;
-    public event Action<BossData> OnBossSpawned;
-    public event Action<BossAttack> OnBossAttackStart;
-    public event Action OnBossAttackEnd;
-    public event Action<BossAttack> OnBossDefense;
-    public event Action<int, int> OnBossHit;
-    public event Action<PlayerState, int> OnPlayerDamaged;
+    // (jogador, dano que passou, dano absorvido pelo bloqueio)
+    public event Action<PlayerState, int, int> OnPlayerDamaged;
     public event Action<GamePhase> OnPhaseChanged;
+    // (jogador, vida com que voltou)
+    public event Action<PlayerState, int> OnPlayerRevived;
+
+    public event Action OnEnemyMovesChosen;
+    public event Action OnStageCleared;
+    public event Action OnStageSpawned;
+    public event Action<EnemyState, BossAttack> OnEnemyAttackStart;
+    public event Action OnEnemyAttackEnd;
+    public event Action<EnemyState> OnEnemyDefense;
+    public event Action<EnemyState, int, int> OnEnemyHit;
+    public event Action<EnemyState> OnEnemyDefeated;
 
     readonly List<PlayerState> players = new();
+    readonly List<EnemyState> enemies = new();
     int currentIndex;
-    int lastBossAttack;
 
     public void StartGame(List<ClassData> chosenClasses)
     {
@@ -78,6 +109,9 @@ public class GameManager : MonoBehaviour
             return;
         }
 
+        if (enemyTypes.Count == 0)
+            Debug.LogWarning("Lista Enemy Types do GameManager vazia: as ondas serao puladas. Use Game > Generate Enemies.");
+
         players.Clear();
         int handLimit = HandLimitFor(chosenClasses.Count);
         foreach (var c in chosenClasses)
@@ -85,7 +119,8 @@ public class GameManager : MonoBehaviour
 
         BossIndex = 0;
         Lap = 0;
-        ResetBossState();
+        WaveIndex = 0;
+        SpawnStage();
 
         StopAllCoroutines();
         StartCoroutine(StartRoutine());
@@ -116,33 +151,108 @@ public class GameManager : MonoBehaviour
         OnStateChanged?.Invoke();
     }
 
-    void ResetBossState()
+    int HealthFor(BossData data)
     {
-        BossHealth = BossMaxHealth;
-        BossArmor = Boss.startingArmor + Lap * armorPerLap;
-        BossBlock = BossArmor;
-        BossThorns = 0;
-        CurrentBossAttack = null;
-        lastBossAttack = -1;
+        var table = data.healthByPlayerCount;
+        if (table == null || table.Length == 0) return 1;
+        return table[Mathf.Clamp(players.Count - 1, 0, table.Length - 1)];
     }
 
-    IEnumerator NextBossRoutine()
-    {
-        SetPhase(GamePhase.BossTurn);
-        OnBossDefeated?.Invoke(Boss);
-        yield return new WaitForSeconds(bossTransitionSeconds);
+    int WaveSize(int wave) =>
+        Mathf.Clamp(waveSizes[wave] + Lap * extraEnemiesPerLap, 0, Mathf.Max(1, maxEnemiesPerWave));
 
-        BossIndex++;
-        if (BossIndex >= bosses.Count)
+    void SpawnStage()
+    {
+        // Pula ondas vazias ou sem tipos de inimigo configurados.
+        while (!IsBossStage && (enemyTypes.Count == 0 || WaveSize(WaveIndex) <= 0))
+            WaveIndex++;
+
+        enemies.Clear();
+        AttackingEnemy = null;
+
+        if (IsBossStage)
         {
-            BossIndex = 0;
-            Lap++;
+            var boss = Boss;
+            enemies.Add(new EnemyState(boss, true,
+                OverrideHealth(boss, HealthFor(boss) + Lap * healthPerLap),
+                boss.startingArmor + Lap * armorPerLap));
+            return;
         }
 
-        ResetBossState();
+        int count = WaveSize(WaveIndex);
+        for (int i = 0; i < count; i++)
+        {
+            var data = randomWaveEnemies
+                ? enemyTypes[UnityEngine.Random.Range(0, enemyTypes.Count)]
+                : enemyTypes[i % enemyTypes.Count];
+            enemies.Add(new EnemyState(data, false,
+                OverrideHealth(data, HealthFor(data) + Lap * enemyHealthPerLap),
+                data.startingArmor + Lap * enemyArmorPerLap));
+        }
+    }
+
+    int OverrideHealth(BossData data, int health)
+    {
+        if (healthOverride == null) return health;
+        int forced = healthOverride(data);
+        return forced > 0 ? forced : health;
+    }
+
+    // Encerra a fase atual como se todos os inimigos tivessem caido (corte de cena do teaser).
+    // So funciona na vez de um jogador, quando nenhuma rotina do jogo esta rodando.
+    public void ForceClearStage()
+    {
+        if (Phase != GamePhase.PlayerTurn) return;
+        foreach (var e in enemies) e.health = 0;
+        StartCoroutine(NextStageRoutine());
+    }
+
+    IEnumerator NextStageRoutine()
+    {
+        SetPhase(GamePhase.BossTurn);
+        OnStageCleared?.Invoke();
+        yield return new WaitForSeconds(bossTransitionSeconds);
+
+        if (IsBossStage)
+        {
+            WaveIndex = 0;
+            BossIndex++;
+            if (BossIndex >= bosses.Count)
+            {
+                BossIndex = 0;
+                Lap++;
+            }
+        }
+        else
+        {
+            WaveIndex++;
+        }
+
+        SpawnStage();
         foreach (var p in players) p.block = 0;
-        OnBossSpawned?.Invoke(Boss);
+        OnStageSpawned?.Invoke();
+
+        // Quem caiu na fase anterior volta para a nova onda/chefe, mantendo a mao.
+        if (RevivePlayers()) yield return new WaitForSeconds(reviveSeconds);
+        yield return EnsureHands(); // quem voltou sem cartas recebe uma mao nova
+
         StartCoroutine(BeginRound());
+    }
+
+    bool RevivePlayers()
+    {
+        bool any = false;
+        foreach (var p in players)
+        {
+            if (p.IsAlive) continue;
+            int amount = Mathf.Max(1, Mathf.CeilToInt(p.classData.maxHealth * reviveHealthFraction));
+            p.health = Mathf.Min(p.classData.maxHealth, amount);
+            p.block = 0;
+            any = true;
+            OnPlayerRevived?.Invoke(p, p.health);
+        }
+        if (any) OnStateChanged?.Invoke();
+        return any;
     }
 
     IEnumerator EnsureHands()
@@ -226,9 +336,15 @@ public class GameManager : MonoBehaviour
         SetPhase(GamePhase.BossRoll);
         yield return new WaitForSeconds(bossRollSeconds);
 
-        CurrentBossAttack = PickBossAttack();
-        BossBlock = BossArmor;
-        OnBossMoveChosen?.Invoke(CurrentBossAttack);
+        foreach (var e in enemies)
+        {
+            if (!e.IsAlive) continue;
+            var forced = attackOverride?.Invoke(e);
+            if (forced != null) e.currentAttack = forced;
+            else e.PickAttack();
+            e.block = e.armor;
+        }
+        OnEnemyMovesChosen?.Invoke();
 
         currentIndex = NextAliveFromStart();
         BeginTurn();
@@ -240,7 +356,30 @@ public class GameManager : MonoBehaviour
         SetPhase(GamePhase.PlayerTurn);
     }
 
-    public bool PlayCard(CardData card, int targetPlayerIndex, int slotIndex = -1)
+    // Espadas precisam de um inimigo alvo quando ha mais de um inimigo vivo.
+    public bool NeedsTarget(CardData card) => card != null && card.suit == Suit.Spades && AliveEnemyCount > 1;
+
+    public int FirstAliveEnemy()
+    {
+        for (int i = 0; i < enemies.Count; i++)
+            if (enemies[i].IsAlive) return i;
+        return -1;
+    }
+
+    // Alvo escolhido se ainda vivo; senao o proximo inimigo vivo da fileira.
+    int ResolveEnemyTarget(int index)
+    {
+        if (enemies.Count == 0) return -1;
+        index = Mathf.Clamp(index, 0, enemies.Count - 1);
+        for (int k = 0; k < enemies.Count; k++)
+        {
+            int i = (index + k) % enemies.Count;
+            if (enemies[i].IsAlive) return i;
+        }
+        return -1;
+    }
+
+    public bool PlayCard(CardData card, int targetPlayerIndex, int slotIndex = -1, int enemyTarget = -1)
     {
         if (Phase != GamePhase.PlayerTurn) return false;
         if (targetPlayerIndex < 0 || targetPlayerIndex >= players.Count) return false;
@@ -249,12 +388,23 @@ public class GameManager : MonoBehaviour
         var target = players[targetPlayerIndex];
         if (!target.IsAlive) return false;
 
+        if (card.suit == Suit.Spades)
+        {
+            bool valid = enemyTarget >= 0 && enemyTarget < enemies.Count && enemies[enemyTarget].IsAlive;
+            if (!valid)
+            {
+                if (NeedsTarget(card)) return false;
+                enemyTarget = FirstAliveEnemy();
+            }
+        }
+
         if (slotIndex < 0) slotIndex = target.FreeSlotIndex();
         if (slotIndex < 0 || slotIndex >= target.slots.Length || target.slots[slotIndex] != null) return false;
 
         CurrentPlayer.hand.Remove(card);
         target.slots[slotIndex] = card;
         target.slotPlayedBy[slotIndex] = currentIndex;
+        target.slotTarget[slotIndex] = enemyTarget;
         CardsPlayedThisTurn++;
 
         OnCardPlaced?.Invoke(target, card, slotIndex);
@@ -303,22 +453,20 @@ public class GameManager : MonoBehaviour
         return -1;
     }
 
-    void ApplyBossDefense()
+    // Valor que a carta do slot vai aplicar (valor + bonus de naipe de quem jogou).
+    public int SlotAmount(PlayerState owner, int slotIndex)
     {
-        var move = CurrentBossAttack;
-        if (move == null) return;
-
-        BossArmor += move.gainArmor;
-        BossBlock = BossArmor + move.gainBlock;
-        BossThorns += move.gainThorns;
-
-        if (move.gainBlock > 0 || move.gainArmor > 0) OnBossDefense?.Invoke(move);
+        var card = owner.slots[slotIndex];
+        if (card == null) return 0;
+        var player = players[owner.slotPlayedBy[slotIndex]];
+        return card.value + (card.suit == player.classData.suit ? suitBonus : 0);
     }
 
     IEnumerator ResolveRoundRoutine()
     {
         SetPhase(GamePhase.Resolving);
-        ApplyBossDefense();
+        foreach (var e in enemies)
+            if (e.IsAlive && e.ApplyDefense()) OnEnemyDefense?.Invoke(e);
 
         for (int o = 0; o < players.Count; o++)
         {
@@ -328,26 +476,29 @@ public class GameManager : MonoBehaviour
                 var card = owner.slots[i];
                 if (card == null) continue;
 
-                var player = players[owner.slotPlayedBy[i]];
-                int amount = card.value + (card.suit == player.classData.suit ? suitBonus : 0);
-                player.deck.Discard(card);
+                int playedBy = owner.slotPlayedBy[i];
+                int amount = SlotAmount(owner, i);
+                players[playedBy].deck.Discard(card);
                 owner.slots[i] = null;
                 OnStateChanged?.Invoke();
 
-                ApplySuitEffect(o, owner.slotPlayedBy[i], card.suit, amount);
+                ApplySuitEffect(o, playedBy, card.suit, amount, owner.slotTarget[i]);
                 if (card.suit == Suit.Diamonds) yield return DrawRoutine(o, amount);
             }
         }
 
-        if (BossHealth <= 0)
+        // Espinhos podem derrubar todos durante a resolucao: derrota, mesmo que a fase tenha acabado.
+        if (!players.Exists(p => p.IsAlive)) { SetPhase(GamePhase.Lost); yield break; }
+
+        if (AliveEnemyCount == 0)
         {
-            StartCoroutine(NextBossRoutine());
+            StartCoroutine(NextStageRoutine());
             yield break;
         }
-        StartCoroutine(BossAttackRoutine());
+        StartCoroutine(EnemiesAttackRoutine());
     }
 
-    void ApplySuitEffect(int ownerIndex, int playedBy, Suit suit, int amount)
+    void ApplySuitEffect(int ownerIndex, int playedBy, Suit suit, int amount, int enemyTarget)
     {
         var owner = players[ownerIndex];
         switch (suit)
@@ -356,7 +507,8 @@ public class GameManager : MonoBehaviour
                 owner.block += amount;
                 break;
             case Suit.Spades:
-                DamageBoss(amount, playedBy);
+                int target = ResolveEnemyTarget(enemyTarget);
+                if (target >= 0) DamageEnemy(enemies[target], amount, playedBy);
                 break;
             case Suit.Hearts:
                 owner.Heal(amount);
@@ -365,45 +517,51 @@ public class GameManager : MonoBehaviour
         OnEffectApplied?.Invoke(owner, suit, amount);
     }
 
-    void DamageBoss(int amount, int attackerIndex)
+    void DamageEnemy(EnemyState enemy, int amount, int attackerIndex)
     {
-        int absorbed = Mathf.Min(BossBlock, amount);
-        BossBlock -= absorbed;
-        BossHealth = Mathf.Max(0, BossHealth - (amount - absorbed));
-        OnBossHit?.Invoke(amount - absorbed, absorbed);
+        int dealt = enemy.TakeDamage(amount, out int absorbed);
+        OnEnemyHit?.Invoke(enemy, dealt, absorbed);
 
-        if (BossThorns > 0)
+        if (enemy.thorns > 0)
         {
-            players[attackerIndex].TakeDamage(BossThorns);
-            OnPlayerDamaged?.Invoke(players[attackerIndex], BossThorns);
+            int absorbedThorns = players[attackerIndex].TakeDamage(enemy.thorns);
+            OnPlayerDamaged?.Invoke(players[attackerIndex], enemy.thorns - absorbedThorns, absorbedThorns);
         }
+
+        if (!enemy.IsAlive) OnEnemyDefeated?.Invoke(enemy);
+        OnStateChanged?.Invoke();
     }
 
-    IEnumerator BossAttackRoutine()
+    IEnumerator EnemiesAttackRoutine()
     {
         SetPhase(GamePhase.BossTurn);
 
-        var attack = CurrentBossAttack;
-        if (attack != null && attack.damage > 0)
+        bool attacked = false;
+        foreach (var enemy in enemies)
         {
+            var attack = enemy.currentAttack;
+            if (!enemy.IsAlive || attack == null || attack.damage <= 0) continue;
+            if (!players.Exists(p => p.IsAlive)) break;
+
+            attacked = true;
+            AttackingEnemy = enemy;
             for (int h = 0; h < attack.hits; h++)
             {
-                OnBossAttackStart?.Invoke(attack);
+                OnEnemyAttackStart?.Invoke(enemy, attack);
                 yield return new WaitForSeconds(bossBulletSeconds);
 
                 foreach (var p in players)
                 {
                     if (!p.IsAlive) continue;
-                    p.TakeDamage(attack.damage);
-                    OnPlayerDamaged?.Invoke(p, attack.damage);
+                    int absorbed = p.TakeDamage(attack.damage);
+                    OnPlayerDamaged?.Invoke(p, attack.damage - absorbed, absorbed);
                 }
                 OnStateChanged?.Invoke();
                 yield return new WaitForSeconds(bossHitPause);
             }
-            OnBossAttackEnd?.Invoke();
         }
-
-        if (attack != null) OnBossAttack?.Invoke(attack);
+        AttackingEnemy = null;
+        if (attacked) OnEnemyAttackEnd?.Invoke();
 
         foreach (var p in players) p.block = 0;
 
@@ -411,25 +569,6 @@ public class GameManager : MonoBehaviour
 
         yield return EnsureHands();
         StartCoroutine(BeginRound());
-    }
-
-    BossAttack PickBossAttack()
-    {
-        var list = Boss.attacks;
-        if (list.Count == 0) return null;
-
-        int next;
-        if (Boss.fixedOrder)
-        {
-            next = (lastBossAttack + 1) % list.Count;
-        }
-        else
-        {
-            do next = UnityEngine.Random.Range(0, list.Count);
-            while (list.Count > 1 && next == lastBossAttack);
-        }
-        lastBossAttack = next;
-        return list[next];
     }
 
     int NextAliveFromStart()

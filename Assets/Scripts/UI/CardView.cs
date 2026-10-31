@@ -39,15 +39,26 @@ public class CardView : MonoBehaviour, IPointerClickHandler
         ApplyScale();
     }
 
+    // Foco (teclado/controle) = contorno amarelo. Selecao = carta maior. Visuais diferentes para nao confundir.
     public void SetFocused(bool value)
     {
+        if (focused == value) return;
         focused = value;
-        ApplyScale();
+
+        var outline = GetComponent<Outline>();
+        if (outline == null && value)
+        {
+            outline = gameObject.AddComponent<Outline>();
+            outline.effectColor = new Color(1f, 0.9f, 0.2f, 1f);
+            outline.effectDistance = new Vector2(5f, 5f);
+            outline.useGraphicAlpha = false;
+        }
+        if (outline != null) outline.enabled = value;
     }
 
     void ApplyScale()
     {
-        transform.localScale = selected || focused ? baseScale * 1.15f : baseScale;
+        transform.localScale = selected ? baseScale * 1.15f : baseScale;
     }
 
     public void OnPointerClick(PointerEventData eventData) => Clicked?.Invoke(this);

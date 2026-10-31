@@ -2,13 +2,15 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
 // Navegacao por foco (d-pad/setas) para quem joga com controle ou teclado.
 // So o dispositivo dono do jogador da vez controla a batalha.
+// O foco so aparece depois que uma tecla/botao de navegacao e usado e some quando o mouse e usado.
 public class BattleFocus : MonoBehaviour
 {
-    enum Kind { Hand, Slots, EndTurn }
+    enum Kind { Hand, Slots, EndTurn, Enemies }
 
     struct Row
     {
@@ -25,8 +27,11 @@ public class BattleFocus : MonoBehaviour
     Vector3 highlightedScale;
     PlayerState lastPlayer;
     readonly List<Row> rows = new();
+    readonly List<int> aliveEnemies = new();
     readonly Vector3[] corners = new Vector3[4];
     int row, col;
+    bool wasChoosing;
+    bool navActive;
 
     public void Init(BattleUI battleUI, GameManager manager)
     {
@@ -90,7 +95,7 @@ public class BattleFocus : MonoBehaviour
             if (menuOpen && (PlayerInputs.Select(dev) || PlayerInputs.Cancel(dev))) { gm.ToggleMenu(); return; }
         }
 
-        if (gm.Phase != GamePhase.PlayerTurn || menuOpen) { Hide(); return; }
+        if (gm.Phase != GamePhase.PlayerTurn || menuOpen) { HideAll(); return; }
 
         var current = gm.CurrentPlayer;
         if (current != lastPlayer)
@@ -99,12 +104,54 @@ public class BattleFocus : MonoBehaviour
             row = col = 0;
         }
 
+        bool choosing = ui.IsChoosingTarget;
+        if (choosing != wasChoosing)
+        {
+            wasChoosing = choosing;
+            if (choosing) row = col = 0;
+        }
+
         BuildRows(current);
         row = Mathf.Clamp(row, 0, rows.Count - 1);
         col = Mathf.Clamp(col, 0, rows[row].count - 1);
 
+        if (MouseUsed()) navActive = false;
+        if (!navActive)
+        {
+            if (!NavPressed()) { HideAll(); return; }
+            navActive = true;
+            // Seta/confirmar so mostram o foco onde ele esta (sem mover nem confirmar algo invisivel).
+            // Cancelar age direto, para desfazer uma selecao feita com o mouse.
+            if (!Pressed(PlayerInputs.Cancel)) { Place(current); return; }
+        }
+
         if (ReadInput(current)) return;
         Place(current);
+    }
+
+    bool NavPressed() =>
+        Pressed(PlayerInputs.Up) || Pressed(PlayerInputs.Down) || Pressed(PlayerInputs.Left) ||
+        Pressed(PlayerInputs.Right) || Pressed(PlayerInputs.Submit) || Pressed(PlayerInputs.Cancel);
+
+    // Mouse mexido ou clicado durante a vez de quem joga com teclado/mouse.
+    bool MouseUsed()
+    {
+        int dev = ui.CurrentDevice;
+        if (dev != PlayerInputs.None && dev != PlayerInputs.KeyboardMouse) return false;
+
+        var mouse = Mouse.current;
+        if (mouse == null) return false;
+        return mouse.delta.ReadValue().sqrMagnitude > 4f
+            || mouse.leftButton.wasPressedThisFrame
+            || mouse.rightButton.wasPressedThisFrame
+            || mouse.scroll.ReadValue().sqrMagnitude > 0f;
+    }
+
+    void HideAll()
+    {
+        Hide();
+        SetHandFocus(null, -1);
+        SetEnemyFocus(-1);
     }
 
     // Paineis de pausa/derrota: liga a navegacao do EventSystem so enquanto estao abertos.
@@ -145,6 +192,20 @@ public class BattleFocus : MonoBehaviour
     void BuildRows(PlayerState current)
     {
         rows.Clear();
+
+        // Escolhendo o alvo de uma carta de Espadas: so os inimigos vivos ficam navegaveis.
+        if (ui.IsChoosingTarget)
+        {
+            aliveEnemies.Clear();
+            for (int i = 0; i < gm.Enemies.Count; i++)
+                if (gm.Enemies[i].IsAlive && i < ui.EnemyViews.Count) aliveEnemies.Add(i);
+            if (aliveEnemies.Count > 0)
+            {
+                rows.Add(new Row { kind = Kind.Enemies, player = -1, count = aliveEnemies.Count });
+                return;
+            }
+        }
+
         if (current.hand.Cards.Count > 0)
             rows.Add(new Row { kind = Kind.Hand, player = -1, count = current.hand.Cards.Count });
 
@@ -165,6 +226,15 @@ public class BattleFocus : MonoBehaviour
         if (Pressed(PlayerInputs.Down)) { row = (row + 1) % n; col = Mathf.Clamp(col, 0, rows[row].count - 1); }
         if (Pressed(PlayerInputs.Left)) col = (col - 1 + rows[row].count) % rows[row].count;
         if (Pressed(PlayerInputs.Right)) col = (col + 1) % rows[row].count;
+
+        if (Pressed(PlayerInputs.Cancel) && ui.IsChoosingTarget)
+        {
+            ui.CancelTarget();
+            wasChoosing = false;
+            BuildRows(current);
+            FocusOwnSlots(current);
+            return true;
+        }
 
         if (Pressed(PlayerInputs.Cancel) && ui.Selected != null)
         {
@@ -189,8 +259,19 @@ public class BattleFocus : MonoBehaviour
             case Kind.EndTurn:
                 if (ui.EndTurnButton.interactable) ui.EndTurnPressed();
                 break;
+            case Kind.Enemies:
+                ui.ActivateEnemy(aliveEnemies[col]);
+                row = 0;
+                break;
         }
         return true;
+    }
+
+    void SetEnemyFocus(int index)
+    {
+        if (ui.FocusedEnemy == index) return;
+        ui.FocusedEnemy = index;
+        ui.RefreshEnemyFocus();
     }
 
     void FocusOwnSlots(PlayerState current)
@@ -208,8 +289,12 @@ public class BattleFocus : MonoBehaviour
     {
         RectTransform target = null;
         var r = rows[row];
+        SetEnemyFocus(r.kind == Kind.Enemies ? aliveEnemies[col] : -1);
         switch (r.kind)
         {
+            case Kind.Enemies:
+                target = (RectTransform)ui.EnemyViews[aliveEnemies[col]].transform;
+                break;
             case Kind.Hand:
                 // Carta em foco fica maior (sem highlight), como no hover do mouse.
                 SetHandFocus(ui.GetPanel(current), col);

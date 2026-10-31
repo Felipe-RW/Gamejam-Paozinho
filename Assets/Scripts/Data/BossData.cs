@@ -2,11 +2,44 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
+// Estilo visual do ataque. Auto escolhe pelo nome do ataque (fogo, moeda, estocada, mordida...).
+public enum AttackFx { Auto, Slash, Pierce, Claw, Fire, Coins, Magic }
+
 [Serializable]
 public class BossAttack
 {
     public string attackName = "Ataque";
     public Sprite icon;
+    public AttackFx fx = AttackFx.Auto;
+
+    public AttackFx ResolveFx()
+    {
+        if (fx != AttackFx.Auto) return fx;
+
+        string n = Simplify(attackName);
+        if (Has(n, "fogo", "chama", "queim", "fire", "brasa")) return AttackFx.Fire;
+        if (Has(n, "moed", "ouro", "cofre", "coin")) return AttackFx.Coins;
+        if (Has(n, "mord", "garra", "arranh", "bite", "claw")) return AttackFx.Claw;
+        if (Has(n, "magia", "feiti", "raio", "maldi", "rejuven", "encant", "magic")) return AttackFx.Magic;
+        if (Has(n, "estoc", "apunhal", "perfur", "flecha", "dupla", "pierce")) return AttackFx.Pierce;
+        return hits > 1 ? AttackFx.Pierce : AttackFx.Slash;
+    }
+
+    static bool Has(string s, params string[] keys)
+    {
+        foreach (var k in keys) if (s.Contains(k)) return true;
+        return false;
+    }
+
+    static string Simplify(string s)
+    {
+        if (string.IsNullOrEmpty(s)) return "";
+        var sb = new System.Text.StringBuilder();
+        foreach (char c in s.ToLowerInvariant().Normalize(System.Text.NormalizationForm.FormD))
+            if (System.Globalization.CharUnicodeInfo.GetUnicodeCategory(c) != System.Globalization.UnicodeCategory.NonSpacingMark)
+                sb.Append(c);
+        return sb.ToString();
+    }
 
     [Header("Dano (em todos os jogadores)")]
     public int damage;
@@ -17,11 +50,6 @@ public class BossAttack
     public int gainThorns;
     public int gainArmor;
 
-    [Header("Efeitos visuais proprios (opcional)")]
-    public GameObject bulletPrefab;
-    public GameObject hitEffectPrefab;
-    public float hitEffectSeconds = 1.5f;
-    public float hitEffectScale = 1f;
 
     public string Describe()
     {
