@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -127,6 +127,7 @@ public class StoryTeaserDirector : MonoBehaviour
         gm.bossBulletSeconds = 0.42f;
         gm.bossHitPause = 0.25f;
         gm.bossTransitionSeconds = 0.7f;
+        gm.resolveStepSeconds = 0.05f;
 
         gm.waveSizes = new List<int> { 3 };
         gm.extraEnemiesPerLap = 0;

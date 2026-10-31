@@ -4090,6 +4090,7 @@ MonoBehaviour:
   arrowLeft: {fileID: 396661309}
   arrowRight: {fileID: 424045480}
   confirmButton: {fileID: 1749888722}
+  titleText: {fileID: 235989546}
 --- !u!114 &632129857
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4737,6 +4738,7 @@ MonoBehaviour:
   arrowLeft: {fileID: 23499154}
   arrowRight: {fileID: 39523794}
   confirmButton: {fileID: 1758968093}
+  titleText: {fileID: 344218066}
 --- !u!1 &753231387
 GameObject:
   m_ObjectHideFlags: 0
@@ -7520,6 +7522,7 @@ MonoBehaviour:
   arrowLeft: {fileID: 932981224}
   arrowRight: {fileID: 177368246}
   confirmButton: {fileID: 1012977860}
+  titleText: {fileID: 1609106481}
 --- !u!114 &1487176402
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7738,6 +7741,7 @@ MonoBehaviour:
   startButton: {fileID: 1810213364}
   closeButton: {fileID: 549202727}
   battleScene: CenadeJogo
+  prologueScene: Prologo
 --- !u!1 &1570708009
 GameObject:
   m_ObjectHideFlags: 0
@@ -8557,6 +8561,7 @@ MonoBehaviour:
   arrowLeft: {fileID: 607825372}
   arrowRight: {fileID: 1323827683}
   confirmButton: {fileID: 1607510016}
+  titleText: {fileID: 654213843}
 --- !u!114 &1757169140
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -14,6 +14,8 @@ public class PlayerSelectCard : MonoBehaviour
     public Button arrowLeft;
     public Button arrowRight;
     public Button confirmButton;
+    [Tooltip("Texto 'Select Player' da vaga vazia. Vazio = procura o filho 'txt_Player'.")]
+    public GameObject titleText;
 
     public ClassData Confirmed { get; private set; }
     public int Owner { get; private set; } = PlayerInputs.None;
@@ -29,6 +31,11 @@ public class PlayerSelectCard : MonoBehaviour
     public void Setup(ClassData[] available)
     {
         classes = available;
+        if (titleText == null)
+        {
+            var t = transform.Find("txt_Player");
+            if (t != null) titleText = t.gameObject;
+        }
         selectButton.onClick.AddListener(() => MouseJoinRequested?.Invoke(this));
         arrowLeft.onClick.AddListener(() => { if (Owner == PlayerInputs.KeyboardMouse) Move(-1); });
         arrowRight.onClick.AddListener(() => { if (Owner == PlayerInputs.KeyboardMouse) Move(1); });
@@ -75,6 +82,7 @@ public class PlayerSelectCard : MonoBehaviour
         SetConfirmLabel(confirmText);
         selectButton.gameObject.SetActive(true);
         emptyText.gameObject.SetActive(true);
+        if (titleText != null) titleText.SetActive(true);
         pickerRoot.SetActive(false);
         Changed?.Invoke();
     }
@@ -84,6 +92,7 @@ public class PlayerSelectCard : MonoBehaviour
         index = 0;
         selectButton.gameObject.SetActive(false);
         emptyText.gameObject.SetActive(false);
+        if (titleText != null) titleText.SetActive(false);
         pickerRoot.SetActive(true);
         arrowLeft.gameObject.SetActive(true);
         arrowRight.gameObject.SetActive(true);

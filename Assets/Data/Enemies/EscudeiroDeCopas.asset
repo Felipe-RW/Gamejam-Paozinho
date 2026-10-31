@@ -14,40 +14,31 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BossData
   displayName: Escudeiro de Copas
   sprite: {fileID: 8875227137565277807, guid: 453aea05e510e8f438c12d55780edf4a, type: 3}
-  healthByPlayerCount: 12000000180000002000000028000000i
+  healthByPlayerCount: 01000000180000002000000028000000i
   startingArmor: 1
   attacks:
   - attackName: Escudada
     icon: {fileID: -3374298318667208731, guid: a11b9a243de8d8444927f9a930a25b69, type: 3}
+    fx: 0
     damage: 3
     hits: 1
     gainBlock: 4
     gainThorns: 0
     gainArmor: 0
-    bulletPrefab: {fileID: 0}
-    hitEffectPrefab: {fileID: 0}
-    hitEffectSeconds: 1.5
-    hitEffectScale: 1
   - attackName: Pancada
     icon: {fileID: 8320824912735345967, guid: cefc70f59d33549449c2bfcb0ae8c619, type: 3}
+    fx: 0
     damage: 5
     hits: 1
     gainBlock: 0
     gainThorns: 0
     gainArmor: 0
-    bulletPrefab: {fileID: 0}
-    hitEffectPrefab: {fileID: 0}
-    hitEffectSeconds: 1.5
-    hitEffectScale: 1
   - attackName: Espinhos
     icon: {fileID: 3694609330789066741, guid: c957c5e7e6fd67f4aad7ca7865eedd64, type: 3}
+    fx: 0
     damage: 2
     hits: 1
     gainBlock: 0
     gainThorns: 1
     gainArmor: 0
-    bulletPrefab: {fileID: 0}
-    hitEffectPrefab: {fileID: 0}
-    hitEffectSeconds: 1.5
-    hitEffectScale: 1
   fixedOrder: 0

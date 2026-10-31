@@ -51,6 +51,10 @@ public class GameManager : MonoBehaviour
     [Header("Regras")]
     public int suitBonus = 2;
     public int slotsPerPlayer = 3;
+    [Tooltip("Ordem em que os naipes agem no fim da rodada. Paus primeiro: o escudo ja existe quando os espinhos revidam as Espadas; Copas depois: a cura recupera o dano dos espinhos.")]
+    public Suit[] resolveOrder = { Suit.Clubs, Suit.Spades, Suit.Hearts, Suit.Diamonds };
+    [Tooltip("Pausa entre cada carta resolvida, para dar para ler a ordem (0 = sem pausa).")]
+    public float resolveStepSeconds = 0.15f;
 
     [Header("Cartas")]
     public List<CardData> allCards = new();
@@ -462,30 +466,43 @@ public class GameManager : MonoBehaviour
         return card.value + (card.suit == player.classData.suit ? suitBonus : 0);
     }
 
+    // Ordem configurada sem repeticoes; naipes que faltarem vao para o fim (nenhuma carta fica sem resolver).
+    List<Suit> ResolveOrder()
+    {
+        var order = new List<Suit>();
+        if (resolveOrder != null)
+            foreach (var s in resolveOrder) if (!order.Contains(s)) order.Add(s);
+        foreach (Suit s in Enum.GetValues(typeof(Suit))) if (!order.Contains(s)) order.Add(s);
+        return order;
+    }
+
     IEnumerator ResolveRoundRoutine()
     {
         SetPhase(GamePhase.Resolving);
         foreach (var e in enemies)
             if (e.IsAlive && e.ApplyDefense()) OnEnemyDefense?.Invoke(e);
 
-        for (int o = 0; o < players.Count; o++)
-        {
-            var owner = players[o];
-            for (int i = 0; i < owner.slots.Length; i++)
+        // Resolve por naipe, na ordem de resolveOrder; dentro de cada naipe, por jogador e slot.
+        foreach (var suit in ResolveOrder())
+            for (int o = 0; o < players.Count; o++)
             {
-                var card = owner.slots[i];
-                if (card == null) continue;
+                var owner = players[o];
+                for (int i = 0; i < owner.slots.Length; i++)
+                {
+                    var card = owner.slots[i];
+                    if (card == null || card.suit != suit) continue;
 
-                int playedBy = owner.slotPlayedBy[i];
-                int amount = SlotAmount(owner, i);
-                players[playedBy].deck.Discard(card);
-                owner.slots[i] = null;
-                OnStateChanged?.Invoke();
+                    int playedBy = owner.slotPlayedBy[i];
+                    int amount = SlotAmount(owner, i);
+                    players[playedBy].deck.Discard(card);
+                    owner.slots[i] = null;
+                    OnStateChanged?.Invoke();
 
-                ApplySuitEffect(o, playedBy, card.suit, amount, owner.slotTarget[i]);
-                if (card.suit == Suit.Diamonds) yield return DrawRoutine(o, amount);
+                    ApplySuitEffect(o, playedBy, card.suit, amount, owner.slotTarget[i]);
+                    if (card.suit == Suit.Diamonds) yield return DrawRoutine(o, amount);
+                    if (resolveStepSeconds > 0f) yield return new WaitForSeconds(resolveStepSeconds);
+                }
             }
-        }
 
         // Espinhos podem derrubar todos durante a resolucao: derrota, mesmo que a fase tenha acabado.
         if (!players.Exists(p => p.IsAlive)) { SetPhase(GamePhase.Lost); yield break; }

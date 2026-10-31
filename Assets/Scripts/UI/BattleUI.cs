@@ -108,6 +108,10 @@ public class BattleUI : MonoBehaviour
 
         endTurnButton.onClick.AddListener(() => { if (MouseAllowed()) EndTurnPressed(); });
 
+        // Um componente de texto desmarcado no Inspector deixa o valor invisivel: garante que estejam ligados.
+        foreach (var text in new[] { bossHealthText, bossMoveText, bossArmorText, bossBlockText, bossThornsText })
+            if (text != null) text.enabled = true;
+
         // Navegacao do EventSystem faria o controle "clicar" no ultimo botao do mouse.
         if (EventSystem.current != null) EventSystem.current.sendNavigationEvents = false;
         gameObject.AddComponent<BattleFocus>().Init(this, gameManager);

@@ -119,6 +119,7 @@ public class TeaserDirector : MonoBehaviour
         gm.bossBulletSeconds = 0.45f;
         gm.bossHitPause = 0.25f;
         gm.bossTransitionSeconds = 0.9f;
+        gm.resolveStepSeconds = 0.05f;
 
         gm.waveSizes = new List<int> { 3 };
         gm.extraEnemiesPerLap = 0;
