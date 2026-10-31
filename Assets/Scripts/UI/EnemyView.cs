@@ -83,6 +83,8 @@ public class EnemyView : MonoBehaviour, IPointerClickHandler
         view.statusText = NewText("Status", root, font, 11 * k, TextAlignmentOptions.Center);
         Stretch(view.statusText.rectTransform, 0, 0f, 1, 0.12f);
 
+        foreach (var t in new[] { view.moveText, view.incomingText, view.healthText, view.statusText }) TextStyle.Apply3D(t);
+
         return view;
     }
 

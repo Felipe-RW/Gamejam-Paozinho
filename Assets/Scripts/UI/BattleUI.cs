@@ -114,7 +114,10 @@ public class BattleUI : MonoBehaviour
 
         // Um componente de texto desmarcado no Inspector deixa o valor invisivel: garante que estejam ligados.
         foreach (var text in new[] { bossHealthText, bossMoveText, bossArmorText, bossBlockText, bossThornsText })
-            if (text != null) text.enabled = true;
+            if (text != null) { text.enabled = true; TextStyle.Apply3D(text); }
+        foreach (var panel in panels)
+            if (panel != null) TextStyle.Apply3D(panel.healthText);
+        if (waveText != null) TextStyle.Apply3D(waveText, 1.5f);
 
         // Navegacao do EventSystem faria o controle "clicar" no ultimo botao do mouse.
         if (EventSystem.current != null) EventSystem.current.sendNavigationEvents = false;
@@ -382,24 +385,85 @@ public class BattleUI : MonoBehaviour
         var font = bossMoveText != null ? bossMoveText.font : TMP_Settings.defaultFontAsset;
         int n = enemies.Count;
         var viewSize = enemyViewSize * enemyScale;
-        float rowWidth = row.rect.width > 1f ? row.rect.width : (viewSize.x + enemySpacing) * n;
-        float wanted = viewSize.x + enemySpacing * enemyScale;
-        float step = n > 0 ? Mathf.Min(wanted, rowWidth / n) : wanted;
-        float scale = Mathf.Min(1f, step / wanted);
+        float gap = enemySpacing * enemyScale;
+
+        // Espaco livre entre os paineis dos jogadores, na altura da fileira.
+        FreeSpan(row, viewSize.y, out float left, out float right);
+        float avail = Mathf.Max(viewSize.x * 0.5f, right - left);
+        float centerX = (left + right) * 0.5f;
+
+        // Lado a lado ou em zigue-zague (um acima, outro abaixo), o que deixar os inimigos maiores.
+        float lineWidth = viewSize.x * n + gap * (n - 1);
+        float lineScale = Mathf.Min(1f, avail / Mathf.Max(1f, lineWidth));
+        float zigStep = viewSize.x * 0.62f;
+        float zigWidth = zigStep * (n - 1) + viewSize.x;
+        float zigScale = n >= 3 ? Mathf.Min(1f, avail / Mathf.Max(1f, zigWidth)) : 0f;
+        bool zigzag = zigScale > lineScale + 0.05f;
+        float scale = zigzag ? zigScale : lineScale;
+        float step = (zigzag ? zigStep : viewSize.x + gap) * scale;
+        float zigOffset = viewSize.y * 0.16f * scale;
 
         for (int i = 0; i < n; i++)
         {
             var view = EnemyView.Create(row, viewSize, font);
             var rt = (RectTransform)view.transform;
             rt.anchorMin = rt.anchorMax = rt.pivot = new Vector2(0.5f, 0.5f);
-            rt.anchoredPosition = new Vector2((i - (n - 1) * 0.5f) * step, 0f);
+            float y = zigzag ? (i % 2 == 0 ? zigOffset : -zigOffset) : 0f;
+            rt.anchoredPosition = new Vector2(centerX + (i - (n - 1) * 0.5f) * step, y);
             rt.localScale = Vector3.one * scale;
+            if (zigzag && i % 2 == 1) rt.SetAsLastSibling(); // os de baixo ficam na frente
             view.Bind(enemies[i], i);
             view.Clicked += v => { if (MouseAllowed()) ActivateEnemy(v.Index); };
             enemyViews.Add(view);
             UiJuice.On(view).Pop(0.35f, i * 0.09f); // entram um de cada vez
         }
     }
+
+    // Intervalo horizontal livre (no espaco local da fileira) na faixa de altura dos inimigos:
+    // tudo que e dos paineis dos jogadores (slots, retrato, vida, mao) e o botao de fim de turno limita a area.
+    void FreeSpan(RectTransform row, float bandHeight, out float left, out float right)
+    {
+        var canvasRect = (RectTransform)row.parent;
+        canvasRect.GetWorldCorners(corners);
+        float l = row.InverseTransformPoint(corners[0]).x + 20f;
+        float r = row.InverseTransformPoint(corners[2]).x - 20f;
+        float half = bandHeight * 0.5f;
+        const float pad = 16f;
+
+        void Block(Component c)
+        {
+            if (c == null || !c.gameObject.activeInHierarchy || c.transform is not RectTransform rt) return;
+            rt.GetWorldCorners(corners);
+            Vector3 a = row.InverseTransformPoint(corners[0]);
+            Vector3 b = row.InverseTransformPoint(corners[2]);
+            float xMin = Mathf.Min(a.x, b.x), xMax = Mathf.Max(a.x, b.x);
+            float yMin = Mathf.Min(a.y, b.y), yMax = Mathf.Max(a.y, b.y);
+            if (yMax < -half || yMin > half) return; // fora da faixa dos inimigos
+            if ((xMin + xMax) * 0.5f < 0f) l = Mathf.Max(l, xMax + pad);
+            else r = Mathf.Min(r, xMin - pad);
+        }
+
+        foreach (var panel in panels)
+        {
+            if (panel == null || !panel.gameObject.activeInHierarchy) continue;
+            foreach (var slot in panel.slotImages) Block(slot);
+            Block(panel.portrait);
+            Block(panel.healthBar);
+            Block(panel.handRoot);
+        }
+        Block(endTurnButton);
+
+        if (r - l < 100f) // layout inesperado: volta para a largura configurada
+        {
+            float w = canvasRect.rect.width * enemyRowWidth * 0.5f;
+            l = -w;
+            r = w;
+        }
+        left = l;
+        right = r;
+    }
+
+    readonly Vector3[] corners = new Vector3[4];
 
     RectTransform EnsureEnemyRow()
     {
@@ -415,20 +479,19 @@ public class BattleUI : MonoBehaviour
         enemyRow.SetParent(canvasRect, false);
         enemyRow.anchorMin = enemyRow.anchorMax = enemyRow.pivot = new Vector2(0.5f, 0.5f);
         enemyRow.sizeDelta = new Vector2(canvasRect.rect.width * enemyRowWidth, enemyViewSize.y * enemyScale);
-
         if (bossSprite != null)
         {
             var b = bossSprite.rectTransform;
             enemyRow.position = b.TransformPoint(b.rect.center);
-
-            // Desenha logo acima da UI do chefe, abaixo do resto (paineis, overlay, menus).
-            Transform top = b;
-            while (top.parent != null && top.parent != canvasRect) top = top.parent;
-            if (top.parent == canvasRect) enemyRow.SetSiblingIndex(top.GetSiblingIndex() + 1);
         }
+
+        // Desenha logo acima do fundo e abaixo de tudo o mais (cartas, slots, paineis, overlay, menus).
+        var bg = FindBackground();
+        Transform top = bg != null ? bg.transform : null;
+        while (top != null && top.parent != null && top.parent != canvasRect) top = top.parent;
+        enemyRow.SetSiblingIndex(top != null && top.parent == canvasRect ? top.GetSiblingIndex() + 1 : 0);
         return enemyRow;
     }
-
     void SetBossVisible(bool visible)
     {
         bossVisible = visible;

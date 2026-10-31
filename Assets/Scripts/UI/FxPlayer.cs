@@ -228,8 +228,7 @@ public class FxPlayer : MonoBehaviour
         tmp.textWrappingMode = TextWrappingModes.NoWrap;
         tmp.color = color;
         tmp.raycastTarget = false;
-        tmp.outlineWidth = 0.25f;
-        tmp.outlineColor = new Color32(20, 10, 10, 255);
+        TextStyle.Apply3D(tmp, 1.5f);
         rt.sizeDelta = new Vector2(300, 80);
 
         rt.position = Center(anchor);

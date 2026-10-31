@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -91,6 +91,7 @@ public class TeaserDirector : MonoBehaviour
 
         ConfigureGame();
         BuildOverlay();
+        StopSceneMusic();
         PlayMusic();
 
         gm.OnEnemyDefeated += e =>
@@ -526,6 +527,13 @@ public class TeaserDirector : MonoBehaviour
 
     // ---------- Musica ----------
 
+    // A cena copiada do jogo ja toca a musica da batalha sozinha (Play On Awake): para ela, senao tocam duas.
+    void StopSceneMusic()
+    {
+        foreach (var src in FindObjectsByType<AudioSource>(FindObjectsSortMode.None))
+            if (src != audioSource && src.loop) { src.Stop(); src.playOnAwake = false; }
+    }
+
     void PlayMusic()
     {
         if (music == null) return;
@@ -645,8 +653,7 @@ public class TeaserDirector : MonoBehaviour
         tmp.alignment = TextAlignmentOptions.Center;
         tmp.textWrappingMode = TextWrappingModes.NoWrap;
         tmp.raycastTarget = false;
-        tmp.outlineWidth = 0.2f;
-        tmp.outlineColor = new Color32(10, 5, 5, 255);
+        TextStyle.Apply3D(tmp, size >= 60f ? 2f : 1f);
         ((RectTransform)go.transform).sizeDelta = new Vector2(1600, size * 2f);
         return tmp;
     }

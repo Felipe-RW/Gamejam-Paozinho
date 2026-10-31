@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -101,6 +101,7 @@ public class StoryTeaserDirector : MonoBehaviour
         gm.menuPanel = null;
         ConfigureGame();
         BuildOverlay();
+        StopSceneMusic();
         PlayMusic();
 
         gm.OnEnemyDefeated += e =>
@@ -245,9 +246,12 @@ public class StoryTeaserDirector : MonoBehaviour
         yield return EndTurn();
         yield return WaitTurn(3);
         yield return PlayCard(3, Suit.Spades, 7, 3);
+        EnsureComboKills();
+        gm.bossTransitionSeconds = 999f; // nada de proximo chefe: o teaser termina aqui
         yield return EndTurn();
 
-        yield return WaitUntilOrTimeout(() => bossDown, 10f, "chefe derrotado");
+        // Confere o estado do chefe direto (nao depende so do evento) e nao espera mais que o necessario.
+        yield return WaitUntilOrTimeout(() => bossDown || BossIsDown(), 4f, "chefe derrotado");
         HideCaption();
         HideCursor();
         yield return Wait(0.8f);
@@ -258,6 +262,31 @@ public class StoryTeaserDirector : MonoBehaviour
         if (exitPlayModeWhenRecording && UnityEditor.EditorPrefs.GetBool(TeaserDirector.RecordPrefKey, false))
             UnityEditor.EditorApplication.isPlaying = false;
 #endif
+    }
+
+    bool BossIsDown()
+    {
+        var b = gm.BossEnemy;
+        return b == null || !b.IsAlive;
+    }
+
+    // O combo final sempre derruba o chefe, mesmo que os dados (armadura, ataques, vida) tenham mudado:
+    // limita a vida do chefe ao dano que as Espadas nos slots vao causar depois do bloqueio da rodada.
+    void EnsureComboKills()
+    {
+        var b = gm.BossEnemy;
+        if (b == null || !b.IsAlive) return;
+
+        int total = 0;
+        foreach (var owner in gm.Players)
+            for (int i = 0; i < owner.slots.Length; i++)
+                if (owner.slots[i] != null && owner.slots[i].suit == Suit.Spades)
+                    total += gm.SlotAmount(owner, i);
+
+        var move = b.currentAttack;
+        int block = b.armor + (move != null ? move.gainArmor + move.gainBlock : 0);
+        int lethal = total - block;
+        if (lethal > 0 && b.health > lethal) b.health = lethal;
     }
 
     // ---------- Cartelas ----------
@@ -533,6 +562,13 @@ public class StoryTeaserDirector : MonoBehaviour
         if (captionBox != null) captionBox.gameObject.SetActive(false);
     }
 
+    // A cena copiada do jogo ja toca a musica da batalha sozinha (Play On Awake): para ela, senao tocam duas.
+    void StopSceneMusic()
+    {
+        foreach (var src in FindObjectsByType<AudioSource>(FindObjectsSortMode.None))
+            if (src != audioSource && src.loop) { src.Stop(); src.playOnAwake = false; }
+    }
+
     void PlayMusic()
     {
         if (music == null) return;
@@ -647,8 +683,7 @@ public class StoryTeaserDirector : MonoBehaviour
         tmp.alignment = TextAlignmentOptions.Center;
         tmp.textWrappingMode = TextWrappingModes.NoWrap;
         tmp.raycastTarget = false;
-        tmp.outlineWidth = 0.2f;
-        tmp.outlineColor = new Color32(10, 5, 5, 255);
+        TextStyle.Apply3D(tmp, size >= 60f ? 2f : 1f);
         // A fonte em pixel e larga: textos longos diminuem ate caber na largura, nunca saem da tela.
         tmp.enableAutoSizing = true;
         tmp.fontSizeMax = size;

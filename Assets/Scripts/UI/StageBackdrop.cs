@@ -164,6 +164,7 @@ public class StageBackdrop : MonoBehaviour
         locationText.textWrappingMode = TextWrappingModes.NoWrap;
         locationText.raycastTarget = false;
         locationText.rectTransform.sizeDelta = new Vector2(1600, 120);
+        TextStyle.Apply3D(locationText, 2f);
         locationText.gameObject.SetActive(false);
     }
 
