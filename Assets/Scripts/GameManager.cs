@@ -18,6 +18,8 @@ public class GameManager : MonoBehaviour
     public float dealSeconds = 0.25f;
     public float bossBulletSeconds = 0.8f;
     public float bossHitPause = 0.6f;
+    [Tooltip("Espera depois de chegar no novo local (onda/chefe) antes da rodada, enquanto a tela clareia.")]
+    public float stageArrivalSeconds = 1.2f;
 
     [Header("Ondas de inimigos (antes de cada chefe)")]
     [Tooltip("Tipos de inimigo sorteados nas ondas. Vazio = sem ondas, vai direto ao chefe.")]
@@ -36,6 +38,33 @@ public class GameManager : MonoBehaviour
     // healthOverride: vida fixa para o inimigo/chefe (<= 0 ignora). attackOverride: ataque fixo da rodada (null ignora).
     public Func<BossData, int> healthOverride;
     public Func<EnemyState, BossAttack> attackOverride;
+
+    [Serializable]
+    public class StageLocation
+    {
+        public Sprite image;
+        [Tooltip("Nome mostrado na transicao. Vazio = nome do arquivo (sem numero inicial, '_' vira espaco).")]
+        public string name;
+    }
+
+    [Header("Fundos dos locais (vazio = mantem o fundo da cena)")]
+    [Tooltip("Uma por onda, em ordem: com 2 ondas por chefe, 0 e 1 vem antes do 1o chefe, 2 e 3 antes do 2o... Recomeca ao acabar a lista.")]
+    public List<StageLocation> waveBackgrounds = new();
+    [Tooltip("Um por chefe, na mesma ordem da lista Bosses. Recomeca ao acabar a lista.")]
+    public List<StageLocation> bossBackgrounds = new();
+
+    // Local da fase atual (null = sem fundo configurado para ela).
+    public StageLocation CurrentLocation
+    {
+        get
+        {
+            if (IsBossStage)
+                return bossBackgrounds.Count > 0 ? bossBackgrounds[BossIndex % bossBackgrounds.Count] : null;
+            if (waveBackgrounds.Count == 0) return null;
+            int stage = BossIndex * Mathf.Max(1, WaveCount) + WaveIndex;
+            return waveBackgrounds[stage % waveBackgrounds.Count];
+        }
+    }
 
     [Header("Jogadores caidos")]
     [Tooltip("Vida com que o jogador caido volta na proxima onda/chefe (1 = vida cheia, 0.5 = metade).")]
@@ -235,6 +264,7 @@ public class GameManager : MonoBehaviour
         SpawnStage();
         foreach (var p in players) p.block = 0;
         OnStageSpawned?.Invoke();
+        if (stageArrivalSeconds > 0f) yield return new WaitForSeconds(stageArrivalSeconds); // tela clareando no novo local
 
         // Quem caiu na fase anterior volta para a nova onda/chefe, mantendo a mao.
         if (RevivePlayers()) yield return new WaitForSeconds(reviveSeconds);

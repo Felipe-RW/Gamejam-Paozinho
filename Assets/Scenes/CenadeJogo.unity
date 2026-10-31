@@ -1764,6 +1764,7 @@ MonoBehaviour:
   enemySpacing: 24
   waveText: {fileID: 0}
   endTurnButton: {fileID: 1931507260}
+  backgroundImage: {fileID: 0}
   startOnPlay: 1
   seatClasses:
   - {fileID: 11400000, guid: df8945feced0abb4a8b162af8a530c7d, type: 2}
@@ -1782,33 +1783,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8353dca92f2ce754ea1b970428c2663a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BattleEffects
-  attack:
-    prefab: {fileID: 4122159243461641300, guid: 0fc5505d19ef47d44b1e6027064be457, type: 3}
-    lifetime: 1
-    scale: 1
-    fitToTarget: 1
-  block:
-    prefab: {fileID: 829153110127868769, guid: a18239a708ec76343847dc78fb69a21a, type: 3}
-    lifetime: 1
-    scale: 1
-    fitToTarget: 1
-  damage:
-    prefab: {fileID: 2146047935952276630, guid: 25d1bbeaf46ad6a4b9c83a5cadc4cdb2, type: 3}
-    lifetime: 1
-    scale: 1
-    fitToTarget: 1
-  heal:
-    prefab: {fileID: 7287232912804467248, guid: ace22c2615735114eb808de1237b6531, type: 3}
-    lifetime: 1
-    scale: 1
-    fitToTarget: 1
   effectsRoot: {fileID: 1241904989}
   sortingOrder: 100
-  bulletPrefab: {fileID: 2579515541602230385, guid: 2c82a159ec3429143b2c92990398fe1d, type: 3}
-  bulletAngleOffset: 0
   darkOverlay: {fileID: 1115162274}
   darkAlpha: 0.7
   fadeSeconds: 0.3
+  shakeIntensity: 1
+  bigHitDamage: 8
 --- !u!1 &157189792
 GameObject:
   m_ObjectHideFlags: 0
@@ -6337,6 +6318,7 @@ MonoBehaviour:
   dealSeconds: 0.25
   bossBulletSeconds: 0.8
   bossHitPause: 0.6
+  stageArrivalSeconds: 1.2
   enemyTypes:
   - {fileID: 11400000, guid: 863049ce3d3240c478aee39f0c5254d4, type: 2}
   - {fileID: 11400000, guid: fd573f738fb7b9943a0463eebfa80263, type: 2}
@@ -6346,11 +6328,26 @@ MonoBehaviour:
   maxEnemiesPerWave: 5
   enemyHealthPerLap: 5
   enemyArmorPerLap: 1
+  randomWaveEnemies: 1
+  waveBackgrounds:
+  - image: {fileID: -7443756053782179069, guid: a1f82fe9a706ad244804b5111e5a6eec, type: 3}
+    name: Wave01
+  - image: {fileID: -1488717806511990548, guid: c1da41c476469444a9e8df916fca74c1, type: 3}
+    name: Wave02
+  bossBackgrounds:
+  - image: {fileID: 6106961544143094016, guid: 346895752eac5a34d958c1f210b1bc66, type: 3}
+    name: Boss01
+  - image: {fileID: 4260325876415979845, guid: 9568aaeed6621b6489531b76c270210f, type: 3}
+    name: Boss02
+  reviveHealthFraction: 1
+  reviveSeconds: 0.8
   menuPanel: {fileID: 2060124578}
   defeatPanel: {fileID: 601324478}
   menuScene: Menu
   suitBonus: 2
   slotsPerPlayer: 3
+  resolveOrder: 00000000010000000200000003000000i
+  resolveStepSeconds: 0.15
   allCards:
   - {fileID: 11400000, guid: b7d01c848bda2664e81479d3780873f6, type: 2}
   - {fileID: 11400000, guid: 3ffdae98c67e943438de925ea4b79c7f, type: 2}
@@ -9374,6 +9371,7 @@ MonoBehaviour:
   enemySpacing: 24
   waveText: {fileID: 0}
   endTurnButton: {fileID: 1465176055}
+  backgroundImage: {fileID: 0}
   startOnPlay: 1
   seatClasses:
   - {fileID: 11400000, guid: df8945feced0abb4a8b162af8a530c7d, type: 2}
@@ -9392,33 +9390,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8353dca92f2ce754ea1b970428c2663a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BattleEffects
-  attack:
-    prefab: {fileID: 4122159243461641300, guid: 0fc5505d19ef47d44b1e6027064be457, type: 3}
-    lifetime: 1
-    scale: 1
-    fitToTarget: 1
-  block:
-    prefab: {fileID: 829153110127868769, guid: a18239a708ec76343847dc78fb69a21a, type: 3}
-    lifetime: 1
-    scale: 1
-    fitToTarget: 1
-  damage:
-    prefab: {fileID: 2146047935952276630, guid: 25d1bbeaf46ad6a4b9c83a5cadc4cdb2, type: 3}
-    lifetime: 1
-    scale: 1
-    fitToTarget: 1
-  heal:
-    prefab: {fileID: 7287232912804467248, guid: ace22c2615735114eb808de1237b6531, type: 3}
-    lifetime: 1
-    scale: 1
-    fitToTarget: 1
   effectsRoot: {fileID: 245101792}
   sortingOrder: 100
-  bulletPrefab: {fileID: 2579515541602230385, guid: 2c82a159ec3429143b2c92990398fe1d, type: 3}
-  bulletAngleOffset: 0
   darkOverlay: {fileID: 1869754195}
   darkAlpha: 0.7
   fadeSeconds: 0.3
+  shakeIntensity: 1
+  bigHitDamage: 8
 --- !u!1 &828279053
 GameObject:
   m_ObjectHideFlags: 0
@@ -16646,6 +16624,7 @@ MonoBehaviour:
   enemySpacing: 24
   waveText: {fileID: 0}
   endTurnButton: {fileID: 1246271206}
+  backgroundImage: {fileID: 0}
   startOnPlay: 1
   seatClasses:
   - {fileID: 11400000, guid: df8945feced0abb4a8b162af8a530c7d, type: 2}
@@ -16664,33 +16643,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8353dca92f2ce754ea1b970428c2663a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BattleEffects
-  attack:
-    prefab: {fileID: 4122159243461641300, guid: 0fc5505d19ef47d44b1e6027064be457, type: 3}
-    lifetime: 1
-    scale: 1
-    fitToTarget: 1
-  block:
-    prefab: {fileID: 829153110127868769, guid: a18239a708ec76343847dc78fb69a21a, type: 3}
-    lifetime: 1
-    scale: 1
-    fitToTarget: 1
-  damage:
-    prefab: {fileID: 2146047935952276630, guid: 25d1bbeaf46ad6a4b9c83a5cadc4cdb2, type: 3}
-    lifetime: 1
-    scale: 1
-    fitToTarget: 1
-  heal:
-    prefab: {fileID: 7287232912804467248, guid: ace22c2615735114eb808de1237b6531, type: 3}
-    lifetime: 1
-    scale: 1
-    fitToTarget: 1
   effectsRoot: {fileID: 1568735087}
   sortingOrder: 100
-  bulletPrefab: {fileID: 2579515541602230385, guid: 2c82a159ec3429143b2c92990398fe1d, type: 3}
-  bulletAngleOffset: 0
   darkOverlay: {fileID: 480992996}
   darkAlpha: 0.7
   fadeSeconds: 0.3
+  shakeIntensity: 1
+  bigHitDamage: 8
 --- !u!1 &1399129904
 GameObject:
   m_ObjectHideFlags: 0
@@ -17069,6 +17028,7 @@ MonoBehaviour:
   enemySpacing: 24
   waveText: {fileID: 0}
   endTurnButton: {fileID: 1940613686}
+  backgroundImage: {fileID: 0}
   startOnPlay: 1
   seatClasses:
   - {fileID: 11400000, guid: df8945feced0abb4a8b162af8a530c7d, type: 2}
@@ -17087,33 +17047,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8353dca92f2ce754ea1b970428c2663a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BattleEffects
-  attack:
-    prefab: {fileID: 4122159243461641300, guid: 0fc5505d19ef47d44b1e6027064be457, type: 3}
-    lifetime: 1
-    scale: 1
-    fitToTarget: 1
-  block:
-    prefab: {fileID: 829153110127868769, guid: a18239a708ec76343847dc78fb69a21a, type: 3}
-    lifetime: 1
-    scale: 1
-    fitToTarget: 1
-  damage:
-    prefab: {fileID: 2146047935952276630, guid: 25d1bbeaf46ad6a4b9c83a5cadc4cdb2, type: 3}
-    lifetime: 1
-    scale: 1
-    fitToTarget: 1
-  heal:
-    prefab: {fileID: 7287232912804467248, guid: ace22c2615735114eb808de1237b6531, type: 3}
-    lifetime: 1
-    scale: 1
-    fitToTarget: 1
   effectsRoot: {fileID: 647387187}
   sortingOrder: 100
-  bulletPrefab: {fileID: 2579515541602230385, guid: 2c82a159ec3429143b2c92990398fe1d, type: 3}
-  bulletAngleOffset: 0
   darkOverlay: {fileID: 1531107583}
   darkAlpha: 0.7
   fadeSeconds: 0.3
+  shakeIntensity: 1
+  bigHitDamage: 8
 --- !u!1 &1435369808
 GameObject:
   m_ObjectHideFlags: 0

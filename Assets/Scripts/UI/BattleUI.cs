@@ -37,6 +37,8 @@ public class BattleUI : MonoBehaviour
 
     [Header("HUD")]
     public Button endTurnButton;
+    [Tooltip("Fundo que muda a cada onda/chefe. Vazio = procura o objeto 'BackGround' do Canvas.")]
+    public Image backgroundImage;
 
     [Header("Teste: classes dos jogadores (vazio = ignorado)")]
     public bool startOnPlay = true;
@@ -115,6 +117,8 @@ public class BattleUI : MonoBehaviour
         // Navegacao do EventSystem faria o controle "clicar" no ultimo botao do mouse.
         if (EventSystem.current != null) EventSystem.current.sendNavigationEvents = false;
         gameObject.AddComponent<BattleFocus>().Init(this, gameManager);
+        gameObject.AddComponent<StageBackdrop>().Init(gameManager, FindBackground(),
+            bossMoveText != null ? bossMoveText.font : null);
 
         if (!startOnPlay) return;
 
@@ -140,6 +144,17 @@ public class BattleUI : MonoBehaviour
         }
         if (layoutPresets != null) layoutPresets.Apply(chosen.Count);
         gameManager.StartGame(chosen);
+    }
+
+    // Imagem de fundo da batalha: campo do Inspector ou o objeto "BackGround" do mesmo Canvas.
+    Image FindBackground()
+    {
+        if (backgroundImage != null) return backgroundImage;
+        var canvas = GetComponentInParent<Canvas>();
+        if (canvas == null) return null;
+        foreach (var img in canvas.rootCanvas.GetComponentsInChildren<Image>(true))
+            if (img.name == "BackGround") return img;
+        return null;
     }
 
     public PlayerPanelView GetPanel(PlayerState player)

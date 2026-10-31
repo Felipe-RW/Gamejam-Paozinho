@@ -110,6 +110,8 @@ public class TeaserDirector : MonoBehaviour
         StartCoroutine(Run());
     }
 
+    void OnDestroy() => StageBackdrop.InstantTransitions = false;
+
     // ---------- Configuracao do jogo para o roteiro ----------
 
     void ConfigureGame()
@@ -120,6 +122,8 @@ public class TeaserDirector : MonoBehaviour
         gm.bossHitPause = 0.25f;
         gm.bossTransitionSeconds = 0.9f;
         gm.resolveStepSeconds = 0.05f;
+        gm.stageArrivalSeconds = 0f;
+        StageBackdrop.InstantTransitions = true; // o teaser tem cortes proprios
 
         gm.waveSizes = new List<int> { 3 };
         gm.extraEnemiesPerLap = 0;
