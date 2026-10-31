@@ -46,7 +46,7 @@ static class TeaserRecorder
     {
         var folder = Path.GetFullPath(Path.Combine(Application.dataPath, "..", "Recordings"));
         Directory.CreateDirectory(folder);
-        outputPath = Path.Combine(folder, $"StateOfDestiny_Teaser_{DateTime.Now:yyyyMMdd_HHmmss}").Replace('\\', '/');
+        outputPath = Path.Combine(folder, $"SuitsOfDestiny_Teaser_{DateTime.Now:yyyyMMdd_HHmmss}").Replace('\\', '/');
 
         var controllerSettings = ScriptableObject.CreateInstance<RecorderControllerSettings>();
         controller = new RecorderController(controllerSettings);

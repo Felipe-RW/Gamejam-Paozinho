@@ -9,6 +9,9 @@ EditorBuildSettings:
     path: Assets/Scenes/Menu.unity
     guid: 361224550c1702046bc62978ce16402e
   - enabled: 1
+    path: Assets/Scenes/Prologo.unity
+    guid: 21f7329fde188534db8ee81a1ee6d5b4
+  - enabled: 1
     path: Assets/Scenes/CenadeJogo.unity
     guid: 451f1a3729444ac489e1ef5978853e54
   m_configObjects:

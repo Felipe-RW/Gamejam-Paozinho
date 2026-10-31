@@ -43,8 +43,8 @@ public class TeaserDirector : MonoBehaviour
     public float afterClickPause = 0.1f;
 
     [Header("Textos")]
-    public string gameTitle = "State of Destiny";
-    public string studio = "BadGirls";
+    public string gameTitle = "Suits of Destiny";
+    public string studio = "Affogato Game Studio";
     public string classesCaption = "Cada herói domina um naipe";
     public string targetCaption = "Espadas: escolha seu alvo";
     public string protectCaption = "Paus protege. Copas cura.";

@@ -6327,7 +6327,7 @@ MonoBehaviour:
   enemyHealthPerLap: 5
   enemyArmorPerLap: 1
   randomWaveEnemies: 1
-  reviveHealthFraction: 0.5
+  reviveHealthFraction: 1
   reviveSeconds: 0.8
   menuPanel: {fileID: 2060124578}
   defeatPanel: {fileID: 601324478}
@@ -6407,7 +6407,7 @@ MonoBehaviour:
   - {fileID: 721305441}
   - {fileID: 760188911}
   - {fileID: 1179332883}
-  testPlayerCount: 2
+  testPlayerCount: 4
 --- !u!82 &560971239
 AudioSource:
   m_ObjectHideFlags: 0
@@ -10410,84 +10410,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 885816377}
   m_CullTransparentMesh: 1
---- !u!1 &896530252
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 896530254}
-  - component: {fileID: 896530253}
-  m_Layer: 0
-  m_Name: TeaserDirector
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &896530253
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 896530252}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bdb2c4cd9f61c6641a7745935c0291d4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::TeaserDirector
-  showcaseClasses:
-  - {fileID: 11400000, guid: df8945feced0abb4a8b162af8a530c7d, type: 2}
-  - {fileID: 11400000, guid: 8d455eb4073e4b244be09ae3095267d0, type: 2}
-  - {fileID: 11400000, guid: 57e526eecf88e684db5ae388d3d57321, type: 2}
-  - {fileID: 11400000, guid: 4d70cf1f92542fa42a94d0a8aad70604, type: 2}
-  leftHero: {fileID: 11400000, guid: 8d455eb4073e4b244be09ae3095267d0, type: 2}
-  rightHero: {fileID: 11400000, guid: df8945feced0abb4a8b162af8a530c7d, type: 2}
-  waveEnemies:
-  - {fileID: 11400000, guid: 863049ce3d3240c478aee39f0c5254d4, type: 2}
-  - {fileID: 11400000, guid: 0026974798285e749a4c152eb346771b, type: 2}
-  - {fileID: 11400000, guid: fd573f738fb7b9943a0463eebfa80263, type: 2}
-  boss: {fileID: 11400000, guid: 78a3537da9f66a94c90a9acedc0ac5af, type: 2}
-  font: {fileID: 11400000, guid: 48f1c521efd4a6e4fa615914e7c29e64, type: 2}
-  music: {fileID: 8300000, guid: ca4875e585e0e3241b546147101cd876, type: 3}
-  musicStartTime: 0
-  musicVolume: 0.8
-  totalSeconds: 30
-  leadInSeconds: 0.25
-  titleSeconds: 2.6
-  classesSeconds: 3.2
-  minEndCardSeconds: 3
-  cursorMoveSeconds: 0.22
-  afterClickPause: 0.1
-  gameTitle: State of Destiny
-  studio: BadGirls
-  classesCaption: "Cada her\xF3i domina um naipe"
-  targetCaption: 'Espadas: escolha seu alvo'
-  protectCaption: Paus protege. Copas cura.
-  bossCaption: Derrote os chefes
-  comboCaption: Ataquem juntos!
-  playersLine: De 1 a 4 jogadores
-  ctaLine: Jogue agora no itch.io
-  captionHeight: 0.9
-  exitPlayModeWhenRecording: 1
---- !u!4 &896530254
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 896530252}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &911824977
 GameObject:
   m_ObjectHideFlags: 0
@@ -12790,6 +12712,106 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
+--- !u!1 &1095745544
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1095745546}
+  - component: {fileID: 1095745545}
+  m_Layer: 0
+  m_Name: StoryTeaserDirector
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1095745545
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1095745544}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ef99e4e402301d3458872923a925e27b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StoryTeaserDirector
+  heroes:
+  - {fileID: 11400000, guid: 8d455eb4073e4b244be09ae3095267d0, type: 2}
+  - {fileID: 11400000, guid: df8945feced0abb4a8b162af8a530c7d, type: 2}
+  - {fileID: 11400000, guid: 57e526eecf88e684db5ae388d3d57321, type: 2}
+  - {fileID: 11400000, guid: 4d70cf1f92542fa42a94d0a8aad70604, type: 2}
+  heroArt:
+  - {fileID: -6471074588898636263, guid: ecec601adf1244340bf1bbffc9544d1f, type: 3}
+  - {fileID: -4566242579406798282, guid: 1268c832246e64d4685f81cb0b3887c2, type: 3}
+  - {fileID: 5686322059310806201, guid: 7256c593e2cc4b74c883b517be339930, type: 3}
+  - {fileID: 8350547147844245508, guid: 12474fd1960b2604aa0af0ddf0c474df, type: 3}
+  waveEnemies:
+  - {fileID: 11400000, guid: 863049ce3d3240c478aee39f0c5254d4, type: 2}
+  - {fileID: 11400000, guid: 0026974798285e749a4c152eb346771b, type: 2}
+  - {fileID: 11400000, guid: fd573f738fb7b9943a0463eebfa80263, type: 2}
+  boss: {fileID: 11400000, guid: 3e3a2abde77caba4aa3a67a675d18c6b, type: 2}
+  storyBackdrop: {fileID: 5572937966038668630, guid: 2f6508bd7d6602b4f97911e09562cb88, type: 3}
+  jacks:
+  - {fileID: -385320548280227377, guid: a680c985506708648933a615feebfd32, type: 3}
+  - {fileID: -2881742500523410040, guid: feb2ea8ac2726604daa79c3380693e4f, type: 3}
+  - {fileID: 8875227137565277807, guid: 453aea05e510e8f438c12d55780edf4a, type: 3}
+  - {fileID: 8297182249285964197, guid: c8377eb573c9098448e6c5307a51a21d, type: 3}
+  queens:
+  - {fileID: 672484358343011404, guid: cb77d210bda34b440a9788c830e9c17f, type: 3}
+  - {fileID: 4551626665597494786, guid: ddf867083cb189843ab31121d5eaa176, type: 3}
+  - {fileID: 4428422022677612464, guid: 218a14e5884d2de49867cddc1a8ddc4f, type: 3}
+  - {fileID: 8269960189363657996, guid: bb8172db91b7cba4993f7fc581cd3333, type: 3}
+  kings:
+  - {fileID: 96251258390462894, guid: 11a539641dd0f9a4fa99f980f6f107e0, type: 3}
+  - {fileID: -1452971232646530193, guid: 491f3eb204ce74642b9e315a2cf8e0b0, type: 3}
+  - {fileID: 5489549798775936244, guid: 85c385a7681a4fc448f49bb690c7108d, type: 3}
+  - {fileID: -3331099242811169423, guid: b7ceb0c66b00d37418d023974e47c570, type: 3}
+  font: {fileID: 11400000, guid: 48f1c521efd4a6e4fa615914e7c29e64, type: 2}
+  music: {fileID: 8300000, guid: ca4875e585e0e3241b546147101cd876, type: 3}
+  musicStartTime: 0
+  musicVolume: 0.8
+  totalSeconds: 30
+  minEndCardSeconds: 3.5
+  cursorMoveSeconds: 0.16
+  afterClickPause: 0.07
+  startingHealth: 0.8
+  kingdom: "Naip\xF3ria"
+  story:
+  - O Rei os enviou para morrer.
+  - Eles sobreviveram.
+  - "Agora voltam a {reino} para cobrar a trai\xE7\xE3o."
+  heroesCaption: "Quatro her\xF3is. Quatro naipes."
+  waveCaption: "Joguem juntos: cada her\xF3i, um naipe."
+  bossCaption: Os Valetes do Rei esperam.
+  comboCaption: Ataquem juntos!
+  courtLine: Enfrentem os 4 Valetes, as 4 Damas e os 4 Reis
+  gameTitle: Suits of Destiny
+  playersLine: De 1 a 4 jogadores
+  ctaLine: Jogue agora no itch.io
+  studio: Affogato Game Studio
+  captionHeight: 0.9
+  exitPlayModeWhenRecording: 1
+--- !u!4 &1095745546
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1095745544}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1115162272
 GameObject:
   m_ObjectHideFlags: 0
@@ -26582,4 +26604,4 @@ SceneRoots:
   - {fileID: 721305445}
   - {fileID: 555352769}
   - {fileID: 588874008}
-  - {fileID: 896530254}
+  - {fileID: 1095745546}

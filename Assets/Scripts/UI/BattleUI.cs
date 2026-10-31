@@ -240,8 +240,17 @@ public class BattleUI : MonoBehaviour
         if (bossMoveText != null) bossMoveText.text = move.Describe();
     }
 
+    // Filtro opcional de jogadas (tutorial do prologo). Nulo = tudo liberado.
+    // (acao, indice do jogador dono do slot ou -1, indice do slot/inimigo ou -1, carta envolvida)
+    public enum GuideAction { HandCard, Slot, Enemy, EndTurn }
+    public System.Func<GuideAction, int, int, CardData, bool> actionFilter;
+
+    bool Allowed(GuideAction action, int player, int index, CardData card) =>
+        actionFilter == null || actionFilter(action, player, index, card);
+
     public void ActivateHandCard(CardData card)
     {
+        if (!Allowed(GuideAction.HandCard, -1, -1, card)) return;
         ClearPending();
         selected = selected == card ? null : card;
         Refresh();
@@ -269,6 +278,7 @@ public class BattleUI : MonoBehaviour
 
     public void EndTurnPressed()
     {
+        if (!Allowed(GuideAction.EndTurn, -1, -1, null)) return;
         ClearPending();
         selected = null;
         gameManager.EndTurn();
@@ -278,7 +288,10 @@ public class BattleUI : MonoBehaviour
     {
         if (playerIndex < 0) return;
 
-        if (gameManager.Players[playerIndex].slots[slotIndex] != null)
+        var slotCard = gameManager.Players[playerIndex].slots[slotIndex];
+        if (!Allowed(GuideAction.Slot, playerIndex, slotIndex, slotCard != null ? slotCard : selected)) return;
+
+        if (slotCard != null)
         {
             if (gameManager.ReturnCard(playerIndex, slotIndex)) { ClearPending(); selected = null; }
             return;
@@ -302,6 +315,7 @@ public class BattleUI : MonoBehaviour
     public void ActivateEnemy(int enemyIndex)
     {
         if (selected == null || selected.suit != Suit.Spades) return;
+        if (!Allowed(GuideAction.Enemy, -1, enemyIndex, selected)) return;
         var enemies = gameManager.Enemies;
         if (enemyIndex < 0 || enemyIndex >= enemies.Count || !enemies[enemyIndex].IsAlive) return;
 

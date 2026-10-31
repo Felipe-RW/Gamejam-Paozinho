@@ -36,7 +36,7 @@ public static class TeaserSceneBuilder
 
         foreach (var selector in Object.FindObjectsByType<LayoutSelector>(FindObjectsInactive.Include))
         {
-            selector.testPlayerCount = 2;
+            selector.testPlayerCount = 4; // teaser 2: os quatro herois
             EditorUtility.SetDirty(selector);
         }
         foreach (var battle in Object.FindObjectsByType<BattleUI>(FindObjectsInactive.Include))
@@ -45,8 +45,8 @@ public static class TeaserSceneBuilder
             EditorUtility.SetDirty(battle);
         }
 
-        var director = new GameObject("TeaserDirector").AddComponent<TeaserDirector>();
-        FillDirector(director);
+        var director = new GameObject("StoryTeaserDirector").AddComponent<StoryTeaserDirector>();
+        FillStoryDirector(director);
 
         EditorSceneManager.MarkSceneDirty(scene);
         EditorSceneManager.SaveScene(scene);
@@ -54,6 +54,48 @@ public static class TeaserSceneBuilder
         Debug.Log($"Cena do teaser criada em {TeaserScene}. Aperte Play para assistir; para gravar, ligue {RecordMenu}.");
     }
 
+    // Teaser 2: historia + 4 herois + Valete de Paus.
+    static void FillStoryDirector(StoryTeaserDirector d)
+    {
+        d.heroes = new[]
+        {
+            Load<ClassData>("Assets/Data/Classes/Paladin.asset"),
+            Load<ClassData>("Assets/Data/Classes/Barbarian.asset"),
+            Load<ClassData>("Assets/Data/Classes/Healer.asset"),
+            Load<ClassData>("Assets/Data/Classes/Sorcerer.asset"),
+        };
+        d.heroArt = new[] { LoadSprite("paladin_full"), LoadSprite("barbarian_full"), LoadSprite("healer_full"), LoadSprite("bard_full") };
+        d.waveEnemies = new[]
+        {
+            Load<BossData>("Assets/Data/Enemies/SoldadoDeEspadas.asset"),
+            Load<BossData>("Assets/Data/Enemies/MercadorDeOuros.asset"),
+            Load<BossData>("Assets/Data/Enemies/EscudeiroDeCopas.asset"),
+        };
+        d.boss = FindBoss("Valete");
+        d.storyBackdrop = LoadSprite("menu_background");
+        d.jacks = new[] { LoadSprite("jack_club"), LoadSprite("jack_spade"), LoadSprite("jack_heart"), LoadSprite("jack_diamond") };
+        d.queens = new[] { LoadSprite("queen_club"), LoadSprite("queen_spade"), LoadSprite("queen_heart"), LoadSprite("queen_diamond") };
+        d.kings = new[] { LoadSprite("king_club"), LoadSprite("king_spade"), LoadSprite("king_heart"), LoadSprite("king_diamond") };
+        d.font = Load<TMPro.TMP_FontAsset>("Assets/Font/PressStart2P-Regular SDF.asset");
+
+        foreach (var guid in AssetDatabase.FindAssets("Batalha t:AudioClip"))
+        {
+            d.music = AssetDatabase.LoadAssetAtPath<AudioClip>(AssetDatabase.GUIDToAssetPath(guid));
+            if (d.music != null) break;
+        }
+        EditorUtility.SetDirty(d);
+    }
+
+    static Sprite LoadSprite(string file)
+    {
+        string path = $"Assets/Sprites/{file}.png";
+        foreach (var asset in AssetDatabase.LoadAllAssetsAtPath(path))
+            if (asset is Sprite s) return s;
+        Debug.LogWarning($"Teaser: sprite nao encontrado: {path}");
+        return null;
+    }
+
+    // Teaser 1 (2 herois + Dragao). Mantido para quem quiser montar a versao antiga a mao.
     static void FillDirector(TeaserDirector d)
     {
         var barbarian = Load<ClassData>("Assets/Data/Classes/Barbarian.asset");

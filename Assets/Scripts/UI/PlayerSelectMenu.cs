@@ -11,6 +11,8 @@ public class PlayerSelectMenu : MonoBehaviour
     public Button startButton;
     public Button closeButton;
     public string battleScene;
+    [Tooltip("Cena do prologo/tutorial, tocada sempre antes da batalha (com opcao de pular). Vazio = sem prologo.")]
+    public string prologueScene = "Prologo";
 
     bool starting;
 
@@ -117,6 +119,12 @@ public class PlayerSelectMenu : MonoBehaviour
         }
 
         GameSession.HasSelection = true;
-        SceneManager.LoadScene(battleScene);
+        SceneManager.LoadScene(ShouldPlayPrologue() ? prologueScene : battleScene);
+    }
+
+    bool ShouldPlayPrologue()
+    {
+        if (string.IsNullOrEmpty(prologueScene)) return false;
+        return Application.CanStreamedLevelBeLoaded(prologueScene); // false = cena fora do Build Settings
     }
 }
