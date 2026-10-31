@@ -31,6 +31,8 @@ public class BattleUI : MonoBehaviour
     public RectTransform enemyRow;
     [Range(0.2f, 1f)] public float enemyRowWidth = 0.6f;
     public Vector2 enemyViewSize = new(180, 260);
+    [Tooltip("Multiplica o tamanho dos inimigos das ondas. Com muitos inimigos, eles encolhem para caber na fileira.")]
+    [Range(0.5f, 3f)] public float enemyScale = 1.8f;
     public float enemySpacing = 24f;
     [Tooltip("Opcional: mostra 'Onda 1/2' ou 'Chefe'.")]
     public TMP_Text waveText;
@@ -379,14 +381,15 @@ public class BattleUI : MonoBehaviour
 
         var font = bossMoveText != null ? bossMoveText.font : TMP_Settings.defaultFontAsset;
         int n = enemies.Count;
-        float rowWidth = row.rect.width > 1f ? row.rect.width : (enemyViewSize.x + enemySpacing) * n;
-        float wanted = enemyViewSize.x + enemySpacing;
+        var viewSize = enemyViewSize * enemyScale;
+        float rowWidth = row.rect.width > 1f ? row.rect.width : (viewSize.x + enemySpacing) * n;
+        float wanted = viewSize.x + enemySpacing * enemyScale;
         float step = n > 0 ? Mathf.Min(wanted, rowWidth / n) : wanted;
         float scale = Mathf.Min(1f, step / wanted);
 
         for (int i = 0; i < n; i++)
         {
-            var view = EnemyView.Create(row, enemyViewSize, font);
+            var view = EnemyView.Create(row, viewSize, font);
             var rt = (RectTransform)view.transform;
             rt.anchorMin = rt.anchorMax = rt.pivot = new Vector2(0.5f, 0.5f);
             rt.anchoredPosition = new Vector2((i - (n - 1) * 0.5f) * step, 0f);
@@ -411,7 +414,7 @@ public class BattleUI : MonoBehaviour
         enemyRow = (RectTransform)go.transform;
         enemyRow.SetParent(canvasRect, false);
         enemyRow.anchorMin = enemyRow.anchorMax = enemyRow.pivot = new Vector2(0.5f, 0.5f);
-        enemyRow.sizeDelta = new Vector2(canvasRect.rect.width * enemyRowWidth, enemyViewSize.y);
+        enemyRow.sizeDelta = new Vector2(canvasRect.rect.width * enemyRowWidth, enemyViewSize.y * enemyScale);
 
         if (bossSprite != null)
         {

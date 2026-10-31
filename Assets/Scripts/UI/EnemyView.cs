@@ -33,6 +33,7 @@ public class EnemyView : MonoBehaviour, IPointerClickHandler
         var root = NewRect("Enemy", parent);
         root.sizeDelta = size;
         var view = root.gameObject.AddComponent<EnemyView>();
+        float k = Mathf.Max(0.5f, size.y / 260f); // textos e icone crescem junto com o inimigo
 
         // Fundo transparente recebe os cliques do mouse.
         var hit = root.gameObject.AddComponent<Image>();
@@ -47,16 +48,16 @@ public class EnemyView : MonoBehaviour, IPointerClickHandler
         var mi = view.moveIcon.rectTransform;
         mi.anchorMin = mi.anchorMax = new Vector2(0.5f, 1f);
         mi.pivot = new Vector2(0.5f, 1f);
-        mi.sizeDelta = new Vector2(48, 48);
-        mi.anchoredPosition = new Vector2(0, -4);
+        mi.sizeDelta = new Vector2(48, 48) * k;
+        mi.anchoredPosition = new Vector2(0, -4 * k);
         view.moveIcon.preserveAspect = true;
 
-        view.moveText = NewText("MoveText", root, font, 12, TextAlignmentOptions.Top);
+        view.moveText = NewText("MoveText", root, font, 12 * k, TextAlignmentOptions.Top);
         Stretch(view.moveText.rectTransform, 0, 0.68f, 1, 1);
-        view.moveText.rectTransform.offsetMax = new Vector2(0, -54);
+        view.moveText.rectTransform.offsetMax = new Vector2(0, -54 * k);
         view.moveText.enableAutoSizing = true;
-        view.moveText.fontSizeMin = 7;
-        view.moveText.fontSizeMax = 12;
+        view.moveText.fontSizeMin = 7 * k;
+        view.moveText.fontSizeMax = 12 * k;
 
         // Meio: sprite do inimigo.
         view.sprite = NewImage("Sprite", root, Color.white);
@@ -64,7 +65,7 @@ public class EnemyView : MonoBehaviour, IPointerClickHandler
         view.sprite.preserveAspect = true;
 
         // Texto de dano previsto das espadas mirando neste inimigo.
-        view.incomingText = NewText("Incoming", root, font, 16, TextAlignmentOptions.Center);
+        view.incomingText = NewText("Incoming", root, font, 16 * k, TextAlignmentOptions.Center);
         Stretch(view.incomingText.rectTransform, 0, 0.42f, 1, 0.56f);
         view.incomingText.color = new Color(1f, 0.85f, 0.2f);
         view.incomingText.fontStyle = FontStyles.Bold;
@@ -76,10 +77,10 @@ public class EnemyView : MonoBehaviour, IPointerClickHandler
         view.healthFill = fill.rectTransform;
         Stretch(view.healthFill, 0, 0, 1, 1);
 
-        view.healthText = NewText("HealthText", barBg.rectTransform, font, 11, TextAlignmentOptions.Center);
+        view.healthText = NewText("HealthText", barBg.rectTransform, font, 11 * k, TextAlignmentOptions.Center);
         Stretch(view.healthText.rectTransform, 0, 0, 1, 1);
 
-        view.statusText = NewText("Status", root, font, 11, TextAlignmentOptions.Center);
+        view.statusText = NewText("Status", root, font, 11 * k, TextAlignmentOptions.Center);
         Stretch(view.statusText.rectTransform, 0, 0f, 1, 0.12f);
 
         return view;
