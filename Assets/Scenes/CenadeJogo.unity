@@ -1761,7 +1761,7 @@ MonoBehaviour:
   enemyRow: {fileID: 0}
   enemyRowWidth: 0.6
   enemyViewSize: {x: 180, y: 260}
-  enemyScale: 2
+  enemyScale: 1.8
   minEnemyFit: 1
   enemySpacing: 24
   waveText: {fileID: 0}
@@ -9370,7 +9370,7 @@ MonoBehaviour:
   enemyRow: {fileID: 0}
   enemyRowWidth: 0.6
   enemyViewSize: {x: 180, y: 260}
-  enemyScale: 2.5
+  enemyScale: 1.8
   minEnemyFit: 0.6
   enemySpacing: 24
   waveText: {fileID: 0}
