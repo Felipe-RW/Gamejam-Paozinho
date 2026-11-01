@@ -198,7 +198,7 @@ public class BattleFocus : MonoBehaviour
         {
             aliveEnemies.Clear();
             for (int i = 0; i < gm.Enemies.Count; i++)
-                if (gm.Enemies[i].IsAlive && i < ui.EnemyViews.Count) aliveEnemies.Add(i);
+                if (gm.Enemies[i].IsAlive && ui.EnemyTargetRect(i) != null) aliveEnemies.Add(i);
             if (aliveEnemies.Count > 0)
             {
                 rows.Add(new Row { kind = Kind.Enemies, player = -1, count = aliveEnemies.Count });
@@ -293,7 +293,7 @@ public class BattleFocus : MonoBehaviour
         switch (r.kind)
         {
             case Kind.Enemies:
-                target = (RectTransform)ui.EnemyViews[aliveEnemies[col]].transform;
+                target = ui.EnemyTargetRect(aliveEnemies[col]);
                 break;
             case Kind.Hand:
                 // Carta em foco fica maior (sem highlight), como no hover do mouse.

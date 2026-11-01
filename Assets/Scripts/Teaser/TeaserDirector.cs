@@ -302,7 +302,7 @@ public class TeaserDirector : MonoBehaviour
         if (ui.IsChoosingTarget)
         {
             int target = enemyIndex >= 0 ? enemyIndex : gm.FirstAliveEnemy();
-            RectTransform rect = target >= 0 && target < ui.EnemyViews.Count ? ui.EnemyViews[target].Anchor : null;
+            RectTransform rect = ui.EnemyTargetRect(target);
             yield return MoveCursor(rect);
             yield return Click();
             ui.ActivateEnemy(target);

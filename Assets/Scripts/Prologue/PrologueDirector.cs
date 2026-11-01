@@ -331,7 +331,7 @@ public class PrologueDirector : MonoBehaviour
         }
 
         if (ui.IsChoosingTarget)
-            return step.enemy >= 0 && step.enemy < ui.EnemyViews.Count ? ui.EnemyViews[step.enemy].Anchor : null;
+            return ui.EnemyTargetRect(step.enemy);
 
         var owner = gm.Players[step.owner];
         var ownerPanel = ui.GetPanel(owner);

@@ -451,7 +451,7 @@ public class StoryTeaserDirector : MonoBehaviour
         if (ui.IsChoosingTarget)
         {
             int target = enemyIndex >= 0 ? enemyIndex : gm.FirstAliveEnemy();
-            var rect = target >= 0 && target < ui.EnemyViews.Count ? ui.EnemyViews[target].Anchor : null;
+            var rect = ui.EnemyTargetRect(target);
             yield return MoveCursor(rect);
             yield return Click();
             ui.ActivateEnemy(target);

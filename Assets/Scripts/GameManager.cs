@@ -390,8 +390,8 @@ public class GameManager : MonoBehaviour
         SetPhase(GamePhase.PlayerTurn);
     }
 
-    // Espadas precisam de um inimigo alvo quando ha mais de um inimigo vivo.
-    public bool NeedsTarget(CardData card) => card != null && card.suit == Suit.Spades && AliveEnemyCount > 1;
+    // Espadas sempre pedem um inimigo alvo, mesmo com um so (ou o chefe): o jogador escolhe quem atacar.
+    public bool NeedsTarget(CardData card) => card != null && card.suit == Suit.Spades && AliveEnemyCount > 0;
 
     public int FirstAliveEnemy()
     {

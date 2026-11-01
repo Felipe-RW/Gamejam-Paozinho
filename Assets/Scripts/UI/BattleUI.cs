@@ -123,6 +123,7 @@ public class BattleUI : MonoBehaviour
 
         // Navegacao do EventSystem faria o controle "clicar" no ultimo botao do mouse.
         if (EventSystem.current != null) EventSystem.current.sendNavigationEvents = false;
+        SetupBossTarget();
         gameObject.AddComponent<BattleFocus>().Init(this, gameManager);
         gameObject.AddComponent<StageBackdrop>().Init(gameManager, FindBackground(),
             bossMoveText != null ? bossMoveText.font : null);
@@ -176,6 +177,41 @@ public class BattleUI : MonoBehaviour
     }
 
     public RectTransform BossAnchor => bossSprite != null ? bossSprite.rectTransform : null;
+
+    // Area clicavel/focavel do inimigo i como alvo de Espadas (no chefe, o sprite do chefe).
+    public RectTransform EnemyTargetRect(int i)
+    {
+        if (gameManager.IsBossStage) return i == 0 && bossSprite != null && bossSprite.isActiveAndEnabled ? BossAnchor : null;
+        return i >= 0 && i < enemyViews.Count && enemyViews[i] != null ? (RectTransform)enemyViews[i].transform : null;
+    }
+
+    // Chefe como alvo: clique no sprite e contorno amarelo enquanto uma Espada espera o alvo.
+    Outline bossOutline;
+
+    void SetupBossTarget()
+    {
+        if (bossSprite == null) return;
+        bossSprite.raycastTarget = true;
+        var trigger = bossSprite.GetComponent<EventTrigger>();
+        if (trigger == null) trigger = bossSprite.gameObject.AddComponent<EventTrigger>();
+        var entry = new EventTrigger.Entry { eventID = EventTriggerType.PointerClick };
+        entry.callback.AddListener(_ => { if (MouseAllowed() && gameManager.IsBossStage) ActivateEnemy(0); });
+        trigger.triggers.Add(entry);
+
+        bossOutline = bossSprite.gameObject.AddComponent<Outline>();
+        bossOutline.effectColor = new Color(1f, 0.9f, 0.2f, 1f);
+        bossOutline.useGraphicAlpha = true;
+        bossOutline.enabled = false;
+    }
+
+    void RefreshBossTarget(bool targeting)
+    {
+        if (bossOutline == null) return;
+        bool on = targeting && gameManager.IsBossStage && gameManager.BossEnemy != null && gameManager.BossEnemy.IsAlive;
+        bossOutline.enabled = on;
+        float d = on && FocusedEnemy == 0 ? 7f : 4f;
+        bossOutline.effectDistance = new Vector2(d, d);
+    }
 
     public RectTransform GetEnemyAnchor(EnemyState enemy)
     {
@@ -618,6 +654,7 @@ public class BattleUI : MonoBehaviour
         var incoming = IncomingDamage();
         for (int i = 0; i < enemyViews.Count; i++)
             enemyViews[i].Refresh(incoming[i], targeting, targeting && FocusedEnemy == i);
+        RefreshBossTarget(targeting);
 
         endTurnButton.interactable = gameManager.Phase == GamePhase.PlayerTurn;
 
@@ -631,5 +668,6 @@ public class BattleUI : MonoBehaviour
         var incoming = IncomingDamage();
         for (int i = 0; i < enemyViews.Count; i++)
             enemyViews[i].Refresh(incoming[i], targeting, targeting && FocusedEnemy == i);
+        RefreshBossTarget(targeting);
     }
 }
