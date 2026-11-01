@@ -33,6 +33,8 @@ public class BattleUI : MonoBehaviour
     public Vector2 enemyViewSize = new(180, 260);
     [Tooltip("Multiplica o tamanho dos inimigos das ondas. Com muitos inimigos, eles encolhem para caber na fileira.")]
     [Range(0.5f, 3f)] public float enemyScale = 1.8f;
+    [Tooltip("Quanto o encaixe automatico pode encolher os inimigos (1 = nunca encolhe; 0,6 = ate 60% do Enemy Scale).")]
+    [Range(0.2f, 1f)] public float minEnemyFit = 0.6f;
     public float enemySpacing = 24f;
     [Tooltip("Opcional: mostra 'Onda 1/2' ou 'Chefe'.")]
     public TMP_Text waveText;
@@ -399,7 +401,7 @@ public class BattleUI : MonoBehaviour
         float zigWidth = zigStep * (n - 1) + viewSize.x;
         float zigScale = n >= 3 ? Mathf.Min(1f, avail / Mathf.Max(1f, zigWidth)) : 0f;
         bool zigzag = zigScale > lineScale + 0.05f;
-        float scale = zigzag ? zigScale : lineScale;
+        float scale = Mathf.Max(minEnemyFit, zigzag ? zigScale : lineScale);
         float step = (zigzag ? zigStep : viewSize.x + gap) * scale;
         float zigOffset = viewSize.y * 0.16f * scale;
 
@@ -423,24 +425,48 @@ public class BattleUI : MonoBehaviour
     // tudo que e dos paineis dos jogadores (slots, retrato, vida, mao) e o botao de fim de turno limita a area.
     void FreeSpan(RectTransform row, float bandHeight, out float left, out float right)
     {
-        var canvasRect = (RectTransform)row.parent;
+        var canvas = row.GetComponentInParent<Canvas>();
+        var canvasRect = (RectTransform)(canvas != null ? canvas.rootCanvas.transform : row.parent);
         canvasRect.GetWorldCorners(corners);
         float l = row.InverseTransformPoint(corners[0]).x + 20f;
         float r = row.InverseTransformPoint(corners[2]).x - 20f;
         float half = bandHeight * 0.5f;
         const float pad = 16f;
 
-        void Block(Component c)
+        // Limita pela area realmente desenhada (nao pela caixa do RectTransform, que costuma ser maior).
+        void BlockRect(RectTransform rt, Rect local)
         {
-            if (c == null || !c.gameObject.activeInHierarchy || c.transform is not RectTransform rt) return;
-            rt.GetWorldCorners(corners);
-            Vector3 a = row.InverseTransformPoint(corners[0]);
-            Vector3 b = row.InverseTransformPoint(corners[2]);
+            Vector3 a = row.InverseTransformPoint(rt.TransformPoint(new Vector3(local.xMin, local.yMin)));
+            Vector3 b = row.InverseTransformPoint(rt.TransformPoint(new Vector3(local.xMax, local.yMax)));
             float xMin = Mathf.Min(a.x, b.x), xMax = Mathf.Max(a.x, b.x);
             float yMin = Mathf.Min(a.y, b.y), yMax = Mathf.Max(a.y, b.y);
             if (yMax < -half || yMin > half) return; // fora da faixa dos inimigos
             if ((xMin + xMax) * 0.5f < 0f) l = Mathf.Max(l, xMax + pad);
             else r = Mathf.Min(r, xMin - pad);
+        }
+
+        void Block(Component c)
+        {
+            if (c == null || !c.gameObject.activeInHierarchy || c.transform is not RectTransform rt) return;
+            var rect = rt.rect;
+            // Imagem com "Preserve Aspect": so o retangulo onde o sprite aparece.
+            if (c is Image img && img.preserveAspect && img.sprite != null && img.sprite.rect.height > 0f)
+            {
+                float aspect = img.sprite.rect.width / img.sprite.rect.height;
+                Vector2 size = rect.width / rect.height > aspect
+                    ? new Vector2(rect.height * aspect, rect.height)
+                    : new Vector2(rect.width, rect.width / aspect);
+                rect = new Rect(rect.center - size * 0.5f, size);
+            }
+            BlockRect(rt, rect);
+        }
+
+        // Mao: as cartas, nao o container (que costuma ocupar a largura toda).
+        void BlockChildren(Transform root)
+        {
+            if (root == null || !root.gameObject.activeInHierarchy) return;
+            foreach (Transform child in root)
+                if (child.gameObject.activeInHierarchy && child is RectTransform crt) BlockRect(crt, crt.rect);
         }
 
         foreach (var panel in panels)
@@ -449,7 +475,7 @@ public class BattleUI : MonoBehaviour
             foreach (var slot in panel.slotImages) Block(slot);
             Block(panel.portrait);
             Block(panel.healthBar);
-            Block(panel.handRoot);
+            BlockChildren(panel.handRoot);
         }
         Block(endTurnButton);
 
@@ -462,7 +488,6 @@ public class BattleUI : MonoBehaviour
         left = l;
         right = r;
     }
-
     readonly Vector3[] corners = new Vector3[4];
 
     RectTransform EnsureEnemyRow()

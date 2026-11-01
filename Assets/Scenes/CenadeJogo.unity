@@ -1761,7 +1761,8 @@ MonoBehaviour:
   enemyRow: {fileID: 0}
   enemyRowWidth: 0.6
   enemyViewSize: {x: 180, y: 260}
-  enemyScale: 2.5
+  enemyScale: 2
+  minEnemyFit: 1
   enemySpacing: 24
   waveText: {fileID: 0}
   endTurnButton: {fileID: 1931507260}
@@ -9370,6 +9371,7 @@ MonoBehaviour:
   enemyRowWidth: 0.6
   enemyViewSize: {x: 180, y: 260}
   enemyScale: 2.5
+  minEnemyFit: 0.6
   enemySpacing: 24
   waveText: {fileID: 0}
   endTurnButton: {fileID: 1465176055}
@@ -16624,6 +16626,7 @@ MonoBehaviour:
   enemyRowWidth: 0.6
   enemyViewSize: {x: 180, y: 260}
   enemyScale: 2.5
+  minEnemyFit: 0.6
   enemySpacing: 24
   waveText: {fileID: 0}
   endTurnButton: {fileID: 1246271206}
@@ -17029,6 +17032,7 @@ MonoBehaviour:
   enemyRowWidth: 0.6
   enemyViewSize: {x: 180, y: 260}
   enemyScale: 2.5
+  minEnemyFit: 0.6
   enemySpacing: 24
   waveText: {fileID: 0}
   endTurnButton: {fileID: 1940613686}
