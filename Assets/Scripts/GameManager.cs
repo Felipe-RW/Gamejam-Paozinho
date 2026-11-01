@@ -72,6 +72,24 @@ public class GameManager : MonoBehaviour
     [Tooltip("Pausa para o efeito de volta antes da nova rodada.")]
     public float reviveSeconds = 0.8f;
 
+    [Header("Fim da demo")]
+    [Tooltip("Ligado = depois do ultimo chefe da lista mostra o painel final e volta ao menu. Desligado = recomeca os chefes mais fortes.")]
+    public bool endAfterLastBoss = true;
+    public Sprite studioLogo;
+    public string endTitle = "Obrigado por jogar!";
+    public string endSubtitle = "Em breve na Steam.";
+    [Tooltip("Volta ao menu sozinho depois desse tempo (0 = so pelo botao).")]
+    public float endAutoReturnSeconds = 12f;
+
+#if UNITY_EDITOR
+    // Preenche o logo automaticamente no editor (salve a cena para ele ir para o build).
+    void OnValidate()
+    {
+        if (studioLogo == null)
+            studioLogo = UnityEditor.AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Sprites/Logo-Studio.jpeg");
+    }
+#endif
+
     [Header("Menu")]
     public GameObject menuPanel;
     public GameObject defeatPanel;
@@ -245,6 +263,14 @@ public class GameManager : MonoBehaviour
         SetPhase(GamePhase.BossTurn);
         OnStageCleared?.Invoke();
         yield return new WaitForSeconds(bossTransitionSeconds);
+
+        // Ultimo chefe derrotado: fim da demo (sem recomecar a lista de chefes).
+        if (IsBossStage && endAfterLastBoss && BossIndex >= bosses.Count - 1)
+        {
+            SetPhase(GamePhase.Won);
+            EndScreen.Show(this, studioLogo, endTitle, endSubtitle, endAutoReturnSeconds);
+            yield break;
+        }
 
         if (IsBossStage)
         {
