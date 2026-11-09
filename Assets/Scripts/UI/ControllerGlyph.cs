@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.DualShock;
+using UnityEngine.InputSystem.Utilities;
 using UnityEngine.UI;
 
 // Icones de botao conforme o controle em uso (PlayStation ou Xbox). Sem controle conectado nao ha icone.
@@ -11,10 +12,18 @@ public static class ControllerGlyphs
 {
     public static bool IsPlay(Gamepad pad) => pad is DualShockGamepad;
 
-    // Controle mais recente (Gamepad.current), ou null se nenhum estiver conectado.
-    public static Sprite Get(GlyphRole role) => Get(role, Gamepad.current);
+    // Ultimo dispositivo apertado foi um controle (e nao teclado/mouse)? Comeca true se ja houver controle.
+    public static bool UsingPad { get; private set; }
 
-    // Icone de um controle especifico (null = sem icone).
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+    static void TrackLastDevice()
+    {
+        UsingPad = Gamepad.current != null;
+        InputSystem.onAnyButtonPress.Call(ctrl => UsingPad = ctrl.device is Gamepad);
+    }
+
+    public static Sprite Get(GlyphRole role) => UsingPad ? Get(role, Gamepad.current) : null;
+
     public static Sprite Get(GlyphRole role, Gamepad pad)
     {
         if (pad == null) return null;
@@ -34,7 +43,6 @@ public static class ControllerGlyphs
     }
 }
 
-// Coloque num objeto com Image: troca o sprite sozinho quando o controle muda e esconde sem controle.
 [RequireComponent(typeof(Image))]
 public class ControllerGlyph : MonoBehaviour
 {
@@ -42,6 +50,7 @@ public class ControllerGlyph : MonoBehaviour
 
     Image image;
     Gamepad lastPad;
+    bool lastUsingPad;
 
     void Awake() => image = GetComponent<Image>();
 
@@ -49,12 +58,13 @@ public class ControllerGlyph : MonoBehaviour
 
     void Update()
     {
-        if (Gamepad.current != lastPad) Refresh();
+        if (Gamepad.current != lastPad || ControllerGlyphs.UsingPad != lastUsingPad) Refresh();
     }
 
     void Refresh()
     {
         lastPad = Gamepad.current;
+        lastUsingPad = ControllerGlyphs.UsingPad;
         var sprite = ControllerGlyphs.Get(role);
         image.sprite = sprite;
         image.enabled = sprite != null;

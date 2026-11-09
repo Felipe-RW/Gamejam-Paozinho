@@ -105,6 +105,11 @@ public class PrologueDirector : MonoBehaviour
     Image highlightImage;
     AudioSource audioSource;
     readonly Vector3[] corners = new Vector3[4];
+    Image skipGlyph;
+    LayoutElement skipGlyphLayout;
+    TMP_Text skipLabel;
+    float skipHold;
+    const float skipHoldSeconds = 1f;
 
     // ---------- Inicio ----------
 
@@ -343,7 +348,17 @@ public class PrologueDirector : MonoBehaviour
     {
         if (overlay == null) return;
         UpdateHighlight();
+        UpdateSkipLabel();
         if (!leaving && SkipPressed()) LoadGame();
+    }
+
+    // Com o icone do controle, so "Pular"; sem ele, o texto com as teclas.
+    void UpdateSkipLabel()
+    {
+        bool pad = skipGlyph.enabled;
+        skipGlyphLayout.ignoreLayout = !pad;
+        string text = pad ? "Segure para pular" : "Pular (Esc)";
+        if (skipLabel.text != text) skipLabel.text = text;
     }
 
     void UpdateHighlight()
@@ -512,9 +527,11 @@ public class PrologueDirector : MonoBehaviour
     {
         var kb = Keyboard.current;
         if (kb != null && kb.escapeKey.wasPressedThisFrame) return true;
-        foreach (int dev in PlayerInputs.Devices())
-            if (PlayerInputs.Start(dev)) return true;
-        return false;
+        // A/X tambem avanca texto e joga cartas: so pula segurando.
+        bool held = false;
+        foreach (var pad in Gamepad.all) if (pad.buttonSouth.isPressed) held = true;
+        skipHold = held ? skipHold + Time.unscaledDeltaTime : 0f;
+        return skipHold >= skipHoldSeconds;
     }
 
     void LoadGame()
@@ -686,20 +703,29 @@ public class PrologueDirector : MonoBehaviour
         rt.anchorMin = rt.anchorMax = rt.pivot = new Vector2(1f, 1f);
         rt.anchoredPosition = new Vector2(-24, -24);
         rt.sizeDelta = new Vector2(330, 56);
-        var label = NewText("Label", rt, "Pular (Esc / Start)", 18, Color.white);
-        Stretch(label.rectTransform);
+        // Largura fixa: o texto muda entre teclado e controle.
         var button = img.gameObject.AddComponent<Button>();
         button.targetGraphic = img;
         button.onClick.AddListener(LoadGame);
 
-        // Icone do Start so existe para controle Xbox; em outros casos fica o texto.
+        // Icone no comeco do texto, lado a lado; so existe para controle Xbox.
+        var row = img.gameObject.AddComponent<HorizontalLayoutGroup>();
+        row.childAlignment = TextAnchor.MiddleCenter;
+        row.spacing = 8f;
+        row.childControlWidth = row.childControlHeight = true;
+        row.childForceExpandWidth = row.childForceExpandHeight = false;
+
         var glyph = NewImage("Glyph", rt, null, Color.white);
         glyph.preserveAspect = true;
-        glyph.rectTransform.anchorMin = glyph.rectTransform.anchorMax = new Vector2(0f, 0.5f);
-        glyph.rectTransform.pivot = new Vector2(0f, 0.5f);
-        glyph.rectTransform.anchoredPosition = new Vector2(10, 0);
-        glyph.rectTransform.sizeDelta = new Vector2(40, 40);
-        glyph.gameObject.AddComponent<ControllerGlyph>().role = GlyphRole.Start;
+        var glyphSize = glyph.gameObject.AddComponent<LayoutElement>();
+        glyphSize.preferredWidth = glyphSize.preferredHeight = 40f;
+        glyph.gameObject.AddComponent<ControllerGlyph>().role = GlyphRole.Confirm;
+
+        var label = NewText("Label", rt, "Pular (Esc)", 18, Color.white);
+        label.textWrappingMode = TextWrappingModes.NoWrap;
+        skipGlyph = glyph;
+        skipGlyphLayout = glyphSize;
+        skipLabel = label;
     }
 
     // Seta para baixo em pixel art (11x12): X = contorno, Y = amarelo.
