@@ -1,6 +1,7 @@
 using System;
 using TMPro;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
 public class PlayerSelectCard : MonoBehaviour
@@ -24,6 +25,8 @@ public class PlayerSelectCard : MonoBehaviour
     public event Action<PlayerSelectCard> MouseJoinRequested;
 
     ClassData[] classes;
+    GameObject[] joinHints; // icones "entre com PS/Xbox" da vaga vazia (btn_PS, btn_Xbox)
+    Image confirmGlyph;
     TMP_Text confirmLabel;
     string confirmText;
     int index;
@@ -36,6 +39,11 @@ public class PlayerSelectCard : MonoBehaviour
             var t = transform.Find("txt_Player");
             if (t != null) titleText = t.gameObject;
         }
+        var hints = new System.Collections.Generic.List<GameObject>();
+        foreach (Transform child in transform)
+            if (child.name.StartsWith("btn_PS") || child.name.StartsWith("btn_Xbox")) hints.Add(child.gameObject);
+        joinHints = hints.ToArray();
+        AddConfirmGlyph();
         selectButton.onClick.AddListener(() => MouseJoinRequested?.Invoke(this));
         arrowLeft.onClick.AddListener(() => { if (Owner == PlayerInputs.KeyboardMouse) Move(-1); });
         arrowRight.onClick.AddListener(() => { if (Owner == PlayerInputs.KeyboardMouse) Move(1); });
@@ -48,11 +56,44 @@ public class PlayerSelectCard : MonoBehaviour
         ShowEmpty();
     }
 
+    // Icone do botao de confirmar do controle de quem ocupa a vaga (mouse/teclado: so o texto).
+    void AddConfirmGlyph()
+    {
+        var go = new GameObject("Glyph", typeof(RectTransform), typeof(Image));
+        var rt = (RectTransform)go.transform;
+        rt.SetParent(confirmButton.transform, false);
+        rt.anchorMin = rt.anchorMax = rt.pivot = new Vector2(0.5f, 0.5f);
+        rt.sizeDelta = new Vector2(64, 64);
+        confirmGlyph = go.GetComponent<Image>();
+        confirmGlyph.preserveAspect = true;
+        confirmGlyph.raycastTarget = false;
+        UpdateConfirmGlyph();
+    }
+
+    void UpdateConfirmGlyph()
+    {
+        Sprite sprite = null;
+        foreach (var pad in Gamepad.all)
+            if (Occupied && pad.deviceId == Owner) sprite = ControllerGlyphs.Get(GlyphRole.Confirm, pad);
+        confirmGlyph.sprite = sprite;
+        confirmGlyph.enabled = sprite != null;
+        // Com controle, fica so o icone: some a moldura e o texto do botao.
+        bool iconOnly = sprite != null;
+        if (confirmButton.targetGraphic != null) confirmButton.targetGraphic.enabled = !iconOnly;
+        if (confirmLabel != null) confirmLabel.enabled = !iconOnly;
+    }
+
+    void SetJoinHints(bool on)
+    {
+        foreach (var h in joinHints) h.SetActive(on);
+    }
+
     public void Join(int deviceId)
     {
         if (classes == null || classes.Length == 0 || Occupied) return;
         Owner = deviceId;
         Open();
+        UpdateConfirmGlyph();
     }
 
     public void ToggleConfirm()
@@ -79,8 +120,10 @@ public class PlayerSelectCard : MonoBehaviour
     {
         Confirmed = null;
         Owner = PlayerInputs.None;
+        UpdateConfirmGlyph();
         SetConfirmLabel(confirmText);
         selectButton.gameObject.SetActive(true);
+        SetJoinHints(true);
         emptyText.gameObject.SetActive(true);
         if (titleText != null) titleText.SetActive(true);
         pickerRoot.SetActive(false);
@@ -91,6 +134,7 @@ public class PlayerSelectCard : MonoBehaviour
     {
         index = 0;
         selectButton.gameObject.SetActive(false);
+        SetJoinHints(false);
         emptyText.gameObject.SetActive(false);
         if (titleText != null) titleText.SetActive(false);
         pickerRoot.SetActive(true);

@@ -86,6 +86,15 @@ public class EndScreen : MonoBehaviour
         button.targetGraphic = buttonImg;
         button.onClick.AddListener(BackToMenu);
 
+        // Icone do botao de confirmar do controle conectado (some sem controle).
+        var glyph = NewImage("Glyph", buttonImg.rectTransform, null, Color.white);
+        glyph.preserveAspect = true;
+        glyph.rectTransform.anchorMin = glyph.rectTransform.anchorMax = new Vector2(0f, 0.5f);
+        glyph.rectTransform.pivot = new Vector2(0f, 0.5f);
+        glyph.rectTransform.anchoredPosition = new Vector2(20, 0);
+        glyph.rectTransform.sizeDelta = new Vector2(48, 48);
+        glyph.gameObject.AddComponent<ControllerGlyph>().role = GlyphRole.Confirm;
+
         UiJuice.On(frame).Pop(0.5f, 0.2f);
         UiJuice.On(titleText).Pop(0.4f, 0.6f);
         UiJuice.On(subText).Pop(0.4f, 0.85f);

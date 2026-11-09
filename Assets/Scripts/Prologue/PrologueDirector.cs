@@ -691,6 +691,15 @@ public class PrologueDirector : MonoBehaviour
         var button = img.gameObject.AddComponent<Button>();
         button.targetGraphic = img;
         button.onClick.AddListener(LoadGame);
+
+        // Icone do Start so existe para controle Xbox; em outros casos fica o texto.
+        var glyph = NewImage("Glyph", rt, null, Color.white);
+        glyph.preserveAspect = true;
+        glyph.rectTransform.anchorMin = glyph.rectTransform.anchorMax = new Vector2(0f, 0.5f);
+        glyph.rectTransform.pivot = new Vector2(0f, 0.5f);
+        glyph.rectTransform.anchoredPosition = new Vector2(10, 0);
+        glyph.rectTransform.sizeDelta = new Vector2(40, 40);
+        glyph.gameObject.AddComponent<ControllerGlyph>().role = GlyphRole.Start;
     }
 
     // Seta para baixo em pixel art (11x12): X = contorno, Y = amarelo.

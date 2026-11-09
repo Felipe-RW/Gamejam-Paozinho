@@ -75,7 +75,7 @@ public class PlayerSelectMenu : MonoBehaviour
         foreach (int dev in PlayerInputs.Devices())
         {
             if (cards.Any(c => c.Owner == dev)) continue;
-            if (!PlayerInputs.Submit(dev) && !PlayerInputs.Start(dev)) continue;
+            if (!PlayerInputs.Submit(dev)) continue;
 
             var free = cards.FirstOrDefault(c => !c.Occupied);
             if (free == null) break;
